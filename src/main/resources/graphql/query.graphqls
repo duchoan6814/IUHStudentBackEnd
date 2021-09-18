@@ -1,0 +1,74 @@
+scalar Date
+
+type Query {
+    getUsers: UserResponse!
+}
+
+type Mutation {
+    createUser(inputs: UserInput!): UserResponse!
+}
+
+#================================================================
+
+interface ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+}
+
+type ErrorsResponse {
+    message: String
+    error_fields: [String]
+}
+
+enum ResponseStatus {
+    OK
+    WARNING
+    ERROR
+}
+
+#========================================================================
+
+type UserResponse implements ResponseInterface{
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: [User]
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String
+    account: Account!
+    images: [Image]
+}
+
+type Account {
+    id: ID!
+    userName: String!
+    password: String!
+}
+
+type Image {
+    name: String!
+}
+
+
+input UserInput {
+    name: String!
+    email: String
+    account: AccountInput!
+    images: [ImageInput]
+}
+
+input ImageInput {
+    name: String!
+}
+
+input AccountInput {
+    userName: String!
+    password: String!
+}
+
+#==========================================================================================
