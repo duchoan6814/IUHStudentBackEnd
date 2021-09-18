@@ -1,0 +1,41 @@
+type User {
+    id: ID!
+    name: String!
+    email: String
+    account: Account!
+    images: [Image]
+}
+
+type Account {
+    id: ID!
+    userName: String!
+    password: String!
+}
+
+type Image {
+    name: String!
+}
+
+input UserInput {
+    name: String!
+    email: String
+    account: AccountInput!
+    images: [ImageInput]
+}
+
+input ImageInput {
+    name: String!
+}
+
+input AccountInput {
+    userName: String!
+    password: String!
+}
+
+type Query {
+    getUsers: [User!]
+}
+
+type Mutation {
+    createUser(inputs: UserInput): User
+}
