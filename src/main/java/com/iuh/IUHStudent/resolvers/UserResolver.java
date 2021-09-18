@@ -49,7 +49,7 @@ public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolv
         user.setImages(images);
 
         UserResponse userResponse = new UserResponse(ResponseStatus.OK, null, "Truy vấn thành công.", new ArrayList<>(Arrays.asList(
-                new User[]{user}
+                new User[]{userRepository.save(user)}
         )));
 
         return userResponse;
