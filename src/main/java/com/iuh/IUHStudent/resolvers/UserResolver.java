@@ -6,12 +6,15 @@ import com.iuh.IUHStudent.entity.User;
 import com.iuh.IUHStudent.entityinput.ImageInput;
 import com.iuh.IUHStudent.entityinput.UserInput;
 import com.iuh.IUHStudent.repository.UserRepository;
+import com.iuh.IUHStudent.response.ResponseStatus;
+import com.iuh.IUHStudent.response.UserResponse;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -19,13 +22,13 @@ public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolv
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> getUsers() {
+    public UserResponse getUsers() {
         List<User> listUser = (List<User>) userRepository.findAll();
-        System.out.println(listUser);
-        return listUser;
+        UserResponse userResponse = new UserResponse(ResponseStatus.OK, null, "Truy vấn thành công.", listUser);
+        return userResponse;
     }
 
-    public User createUser(UserInput input) {
+    public UserResponse createUser(UserInput input) {
         Account account = new Account();
         account.setUserName(input.getAccount().getUserName());
         account.setPassword(input.getAccount().getPassword());
@@ -45,6 +48,10 @@ public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolv
         user.setAccount(account);
         user.setImages(images);
 
-        return userRepository.save(user);
+        UserResponse userResponse = new UserResponse(ResponseStatus.OK, null, "Truy vấn thành công.", new ArrayList<>(Arrays.asList(
+                new User[]{user}
+        )));
+
+        return userResponse;
     }
 }
