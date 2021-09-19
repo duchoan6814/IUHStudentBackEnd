@@ -1,19 +1,22 @@
 package com.iuh.IUHStudent.response;
 
+import com.iuh.IUHStudent.entity.Account;
 import com.iuh.IUHStudent.entity.User;
+import lombok.Builder;
 
 import java.util.List;
 
-public class UserResponse implements ResponseInterface {
+@Builder
+public class AccountResponse implements ResponseInterface{
     private ResponseStatus status;
     private List<ErrorsResponse> errors;
     private String message;
-    private List<User> data;
+    private Account data;
 
-    public UserResponse() {
+    public AccountResponse() {
     }
 
-    public UserResponse(ResponseStatus status, List<ErrorsResponse> errors, String message, List<User> data) {
+    public AccountResponse(ResponseStatus status, List<ErrorsResponse> errors, String message, Account data) {
         this.status = status;
         this.errors = errors;
         this.message = message;
@@ -44,17 +47,17 @@ public class UserResponse implements ResponseInterface {
         this.message = message;
     }
 
-    public List<User> getData() {
+    public Account getData() {
         return data;
     }
 
-    public void setData(List<User> data) {
+    public void setData(Account data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return "UserResponse{" +
+        return "AccountResponse{" +
                 "status=" + status +
                 ", errors=" + errors +
                 ", message='" + message + '\'' +

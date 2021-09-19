@@ -1,5 +1,8 @@
-package com.iuh.IUHStudent.entityinput;
+package com.iuh.IUHStudent.entityinput.account_input;
 
+import lombok.Builder;
+
+@Builder
 public class AccountInput {
     private String userName;
     private String password;
