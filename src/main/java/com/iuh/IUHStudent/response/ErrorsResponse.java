@@ -1,7 +1,12 @@
 package com.iuh.IUHStudent.response;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import java.util.List;
 
+@Builder
+@Getter
 public class ErrorsResponse {
     private String message;
     private List<String> error_fields;

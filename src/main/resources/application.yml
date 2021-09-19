@@ -8,6 +8,8 @@ graphql:
     corsEnabled: true
 
 graphiql:
+  headers:
+    Authorization: Bearer my-generated-token
   mapping: /graphiql
   endpoint:
     graphql: /graphql

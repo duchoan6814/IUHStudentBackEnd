@@ -6,6 +6,7 @@ type Query {
 
 type Mutation {
     register(inputs: RegisterAccountInput!): RegisterResponse!
+    changePassword(inputs: UpdatePasswordInput!): AccountResponse!
 }
 
 #================================================================
@@ -56,6 +57,11 @@ input CreateUserInput {
     name: String!
     email: String
     images: [String]
+}
+
+input UpdatePasswordInput {
+    currentPassword: String!
+    newPassword: String!
 }
 
 
