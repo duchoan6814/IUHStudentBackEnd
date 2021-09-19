@@ -30,7 +30,7 @@ public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolv
 
     public UserResponse createUser(UserInput input) {
         Account account = new Account();
-        account.setUserName(input.getAccount().getUserName());
+        account.setUsername(input.getAccount().getUserName());
         account.setPassword(input.getAccount().getPassword());
 
         List<Image> images = new ArrayList<>();

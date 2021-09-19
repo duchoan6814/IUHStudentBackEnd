@@ -9,6 +9,10 @@ public class ErrorsResponse {
     public ErrorsResponse() {
     }
 
+    public ErrorsResponse(String message) {
+        this.message = message;
+    }
+
     public ErrorsResponse(String message, List<String> error_fields) {
         this.message = message;
         this.error_fields = error_fields;

@@ -21,8 +21,7 @@ public class User {
     )
     private List<Image> images = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
+    @OneToOne(mappedBy = "user")
     private Account account;
 
     public User() {
