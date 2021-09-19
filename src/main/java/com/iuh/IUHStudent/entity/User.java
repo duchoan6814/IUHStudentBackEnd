@@ -1,10 +1,13 @@
 package com.iuh.IUHStudent.entity;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Table(name = "user_table")
 public class User {
     @Id

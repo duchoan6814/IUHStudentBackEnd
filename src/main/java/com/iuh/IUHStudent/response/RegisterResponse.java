@@ -1,23 +1,23 @@
 package com.iuh.IUHStudent.response;
 
-import com.iuh.IUHStudent.entity.User;
+import com.iuh.IUHStudent.entity.Account;
+import lombok.Builder;
 
 import java.util.List;
 
-public class UserResponse implements ResponseInterface {
+@Builder
+public class RegisterResponse implements ResponseInterface{
     private ResponseStatus status;
     private List<ErrorsResponse> errors;
     private String message;
-    private List<User> data;
 
-    public UserResponse() {
+    public RegisterResponse() {
     }
 
-    public UserResponse(ResponseStatus status, List<ErrorsResponse> errors, String message, List<User> data) {
+    public RegisterResponse(ResponseStatus status, List<ErrorsResponse> errors, String message) {
         this.status = status;
         this.errors = errors;
         this.message = message;
-        this.data = data;
     }
 
     public ResponseStatus getStatus() {
@@ -44,21 +44,12 @@ public class UserResponse implements ResponseInterface {
         this.message = message;
     }
 
-    public List<User> getData() {
-        return data;
-    }
-
-    public void setData(List<User> data) {
-        this.data = data;
-    }
-
     @Override
     public String toString() {
-        return "UserResponse{" +
+        return "RegisterResponse{" +
                 "status=" + status +
                 ", errors=" + errors +
                 ", message='" + message + '\'' +
-                ", data=" + data +
                 '}';
     }
 }

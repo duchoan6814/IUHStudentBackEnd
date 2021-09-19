@@ -3,10 +3,10 @@ scalar Date
 type Query {
     login(username: String!, password: String!): AccountResponse!
 }
-#
-#type Mutation {
-#    createUser(inputs: UserInput!): UserResponse!
-#}
+
+type Mutation {
+    register(inputs: RegisterAccountInput!): RegisterResponse!
+}
 
 #================================================================
 
@@ -29,13 +29,6 @@ enum ResponseStatus {
 
 #========================================================================
 
-type AccountResponse implements ResponseInterface{
-    status: ResponseStatus!
-    errors: [ErrorsResponse]
-    message: String
-    data: Account
-}
-
 type Account {
     token: String
     user: User
@@ -53,3 +46,30 @@ type Image {
 }
 
 #==========================================================================================
+input RegisterAccountInput {
+    username: String!
+    password: String!
+    user: CreateUserInput!
+}
+
+input CreateUserInput {
+    name: String!
+    email: String
+    images: [String]
+}
+
+
+#==========================================================================================
+
+type AccountResponse implements ResponseInterface{
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: Account
+}
+
+type RegisterResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+}

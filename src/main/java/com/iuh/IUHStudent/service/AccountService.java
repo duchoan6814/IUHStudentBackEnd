@@ -7,7 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iuh.IUHStudent.entity.Account;
 import com.iuh.IUHStudent.entity.User;
-import com.iuh.IUHStudent.entityinput.AccountInput;
+import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.BadTokenException;
 import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
