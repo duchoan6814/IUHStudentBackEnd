@@ -58,7 +58,7 @@ public class AccountService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public JWTUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return accountRepository.findByUsername(username).map(account -> getUserDetails(account, getToken(account))).orElseThrow(() -> new UsernameNotFoundException("Tài khoản hoặc mật khẩu không đúng!"));
     }
 
