@@ -1,8 +1,15 @@
+db_locate: localhost
+port: 3306
+db_name: IUHStudent
+db_username: springuser
+db_password: saPassword12@
+
 spring:
   jpa:
     hibernate:
       ddl-auto: update
     database: mysql
+    show-sql: true
 
   datasource:
     url: jdbc:mysql://${db_locate}:${port}/${db_name}
