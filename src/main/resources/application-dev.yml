@@ -1,0 +1,9 @@
+db_locate: localhost
+port: 3306
+db_name: IUHStudent
+db_username: springuser
+db_password: saPassword12@
+
+spring:
+  jpa:
+    show-sql: true

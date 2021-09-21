@@ -1,0 +1,9 @@
+db_locate: iuhstudentdb.cbxvjdhq2veo.ap-southeast-1.rds.amazonaws.com
+port: 3306
+db_name: IUHStudent
+db_username: root
+db_password: Tokelovip123
+
+spring:
+  jpa:
+    show-sql: false
