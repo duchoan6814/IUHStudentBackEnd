@@ -48,6 +48,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run Command EC2
-        run: |
-          cd /home/ec2-user
-          bash run-command.sh
+        run: aws ssm send-command \
+              --document-name "AWS-RunShellScript" \
+              --targets '[{"Key":"InstanceIds","Values":["${{ secrets.INSTANCE_ID }}"]}]' \
+              --parameters '{"commands":["#!/bin/bash","yum -y update","cd /home/ec2-user", "bash run-command.sh"]}'
