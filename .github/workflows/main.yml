@@ -40,19 +40,12 @@ jobs:
           tags: hoantruong6814/iuhstudent:latest
           build-args: PROFILE=prod,ARG2=test
 
-      - name: AWS SSM Send-Command
-          uses: peterkimzz/aws-ssm-send-command@master
-          id: ssm
-          with:
-            aws-region: ${{ secrets.AWS_REGION }}
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            instance-ids: ${{ secrets.INSTANCE_ID }}
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-            working-directory: /home/ec2-user/
-            command: bash run-command.sh
-            comment: Hello world!
-
-      # Catch SSM outputs
-      - name: Get the outputs
-        run: echo "The Command id is ${{ steps.ssm.outputs.command-id }}"
+      - name: Copy files to the test website with the AWS CLI
+        run: bash run-command.sh
