@@ -1,4 +1,4 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
 import lombok.*;
 
@@ -31,4 +31,16 @@ public class HocPhan {
     @ManyToOne
     @JoinColumn(name = "hocKy_fk")
     private HocKy hocKy;
+
+    @ManyToOne
+    @JoinColumn(name = "monHocTienQuyet_fk")
+    private MonHoc monHocTienQuyet;
+
+    @ManyToOne
+    @JoinColumn(name = "monHocSongHanh_fk")
+    private MonHoc monHocSongHanh;
+
+    @ManyToOne
+    @JoinColumn(name = "monHocTruoc_fk")
+    private MonHoc monHocTruoc;
 }

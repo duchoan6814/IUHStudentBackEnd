@@ -1,6 +1,5 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 

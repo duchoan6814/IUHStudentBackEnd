@@ -1,8 +1,9 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -19,8 +20,8 @@ public class TaiKhoan {
 
     private String matKhau;
 
-    @OneToOne
-    @JoinColumn(name = "sinhVienId")
-    private SinhVien sinhVien;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "sinhVienId")
+//    private SinhVien sinhViens;
 
 }

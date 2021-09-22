@@ -1,4 +1,4 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
 public enum DanToc {
     KINH

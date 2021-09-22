@@ -1,12 +1,15 @@
 package com.iuh.IUHStudent.entity;
 
-import lombok.Builder;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Builder
+@Data
+@Getter
+@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,13 +1,16 @@
 scalar Date
 
+#selet
 type Query {
     login(username: String!, password: String!): AccountResponse!
+    getLops: LopsResponse!
 }
 
+#create , update , delete
 type Mutation {
     register(inputs: RegisterAccountInput!): RegisterResponse!
     changePassword(inputs: UpdatePasswordInput!): AccountResponse!
-    deleteAccount(id: ID): DeleteUserResponse!
+    createLop(tenLop: String!, khoaHoc: String! ): LopResponse!
 }
 
 #================================================================
@@ -47,6 +50,12 @@ type Image {
     name: String
 }
 
+type Lop{
+    lopId: ID
+    tenLop : String
+    khoaHoc : String
+}
+
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -81,8 +90,16 @@ type RegisterResponse implements ResponseInterface {
     errors: [ErrorsResponse]
 }
 
-type DeleteUserResponse implements ResponseInterface {
+type LopResponse implements ResponseInterface {
     status: ResponseStatus!
     message: String
     errors: [ErrorsResponse]
+    data:Lop
+}
+
+type LopsResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[Lop]
 }

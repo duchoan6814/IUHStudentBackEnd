@@ -12,27 +12,8 @@ import java.util.Set;
 
 @Builder
 @Getter
-public class CreateSinhVienInput {
-    private String maSinhVien;
-    private String maHoSo;
-    private List<String> images;
-    private String hoTenDem;
-    private String ten;
-    private boolean gioiTinh;
-    private BacDaoTao bacDaoTao;
-    private TrangThai trangThai;
-    private LoaiHinhDaoTao loaiHinhDaoTao;
-    private Date ngayVaoTruong;
-    private Date ngaySinh;
-    private Date ngayVaoDoan;
-    private String soDienThoai;
-    private String diaChi;
-    private String noiSinh;
-    private String hoKhauThuongTru;
-    private DanToc danToc;
-    private Date ngayVaoDang;
+public class CreateUserInput {
+    private String name;
     private String email;
-    private TonGiao tonGiao;
-    private Set<LopHocPhan> lopHocPhans;
-    private Lop lop;
+    private List<String> images;
 }

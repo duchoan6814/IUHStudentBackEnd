@@ -1,13 +1,12 @@
 package com.iuh.IUHStudent.resolvers;
 
-import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.Image;
-import com.iuh.IUHStudent.entity.User;
+import com.iuh.IUHStudent.entity.*;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.BadTokenException;
 import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
+import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.service.AccountService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -24,6 +23,30 @@ import java.util.List;
 public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private LopRepository lopRepository;
+
+    @PreAuthorize("isAuthenticated()")
+    public LopResponse createLop(String tenLop, String khoaHoc) {
+        Lop lop = new Lop();
+        lop.setTenLop(tenLop);
+        lop.setKhoaHoc(khoaHoc);
+
+        Lop lopResp = lopRepository.save(lop);
+
+        LopResponse lopResponse = new LopResponse();
+        if (lopResp == null) {
+            lopResponse.setMessage("Tao lop khong thanh cong");
+            lopResponse.setStatus(ResponseStatus.ERROR);
+
+        } else {
+            lopResponse.setMessage("Tao lop thanh cong");
+            lopResponse.setStatus(ResponseStatus.OK);
+            lopResponse.setData(lopResp);
+        }
+        return lopResponse;
+    }
 
     @PreAuthorize("isAuthenticated()")
     public DeleteUserResponse deleteAccount(long id) {

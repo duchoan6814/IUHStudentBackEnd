@@ -1,12 +1,10 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -23,7 +21,7 @@ public class SinhVien {
 
     private String maSinhVien;
     private String maHoSo;
-    private String avata;
+    private String image;
     private String hoTenDem;
     private String ten;
     private boolean gioiTinh;
@@ -52,5 +50,7 @@ public class SinhVien {
     @ManyToOne
     @JoinColumn(name = "lop_fk")
     private Lop lop;
+
+
 
 }

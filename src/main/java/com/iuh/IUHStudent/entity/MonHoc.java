@@ -1,4 +1,4 @@
-package com.app.SupportStudentApp.entity;
+package com.iuh.IUHStudent.entity;
 
 import lombok.*;
 
@@ -27,6 +27,6 @@ public class MonHoc {
 
     @OneToMany(fetch = FetchType.EAGER,targetEntity = HocPhan.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "monHoc_fk",referencedColumnName = "monHocId")
-    private Set<MonHoc> monHocs;
+    private Set<HocPhan> hocPhans;
 
 }

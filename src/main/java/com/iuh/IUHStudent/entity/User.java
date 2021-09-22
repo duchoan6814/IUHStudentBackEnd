@@ -4,6 +4,7 @@ import lombok.Builder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,7 @@ public class User {
     private String name;
     private String email;
 
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "Image",
@@ -26,6 +28,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Account account;
+
 
     public User() {
     }
@@ -37,7 +40,6 @@ public class User {
         this.images = images;
         this.account = account;
     }
-
     public long getId() {
         return id;
     }
