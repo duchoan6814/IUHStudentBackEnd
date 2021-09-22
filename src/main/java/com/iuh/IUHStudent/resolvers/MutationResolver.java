@@ -6,11 +6,9 @@ import com.iuh.IUHStudent.entity.User;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
+import com.iuh.IUHStudent.exception.BadTokenException;
 import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
-import com.iuh.IUHStudent.response.AccountResponse;
-import com.iuh.IUHStudent.response.ErrorsResponse;
-import com.iuh.IUHStudent.response.RegisterResponse;
-import com.iuh.IUHStudent.response.ResponseStatus;
+import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.service.AccountService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.hibernate.sql.Update;
@@ -28,6 +26,22 @@ public class MutationResolver implements GraphQLMutationResolver {
     private AccountService accountService;
 
     @PreAuthorize("isAuthenticated()")
+    public DeleteUserResponse deleteAccount(long id) {
+        boolean isDeleted = accountService.deleteUser(id);
+        if(isDeleted) {
+            DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
+            deleteUserResponse.setStatus(ResponseStatus.OK);
+            deleteUserResponse.setMessage("Xoa user thanh cong");
+            return deleteUserResponse;
+        }else {
+            DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
+            deleteUserResponse.setStatus(ResponseStatus.ERROR);
+            deleteUserResponse.setMessage("Xoa user khong thanh cong");
+            return deleteUserResponse;
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
     public AccountResponse changePassword(UpdatePasswordInput inputs) {
         try {
             Account account = accountService.updatePassword(accountService.getCurrentAccount().getId(), inputs);
@@ -42,6 +56,14 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .message("Đổi mật khẩu không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {{
                         add(ErrorsResponse.builder().message("Mật khẩu không đúng!").build());
+                    }})
+                    .build();
+        } catch (BadTokenException bex) {
+            return AccountResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Đổi mật khẩu không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {{
+                        add(ErrorsResponse.builder().message("Token khong dung!").build());
                     }})
                     .build();
         }
