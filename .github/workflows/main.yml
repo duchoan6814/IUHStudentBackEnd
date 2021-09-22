@@ -48,6 +48,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run Command EC2
-        run:
+        run: |
           cd /home/ec2-user
           bash run-command.sh
