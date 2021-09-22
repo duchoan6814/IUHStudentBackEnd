@@ -49,4 +49,7 @@ jobs:
 
       - name: Run Command EC2
         run: |
-          aws ssm send-command --document-name "AWS-RunRemoteScript" --instance-ids "${{ secrets.INSTANCE_ID }}" --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"hoantruong6814\", \"repository\":\"IUHStudentBackEnd\", \"path\": \"/home/ec2-user\"}"],"commandLine":["cd /home/ec2-user", "bash run-command.sh"]}'
+          aws ssm send-command \
+              --document-name "AWS-RunShellScript" \
+              --targets '[{"Key":"InstanceIds","Values":["${{ secrets.INSTANCE_ID }}"]}]' \
+              --parameters '{"commands":["#!/bin/bash","yum -y update", "cd /home/ec2-user", "bash run-command.sh"]}'
