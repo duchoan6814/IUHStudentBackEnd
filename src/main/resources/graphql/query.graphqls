@@ -7,6 +7,7 @@ type Query {
 type Mutation {
     register(inputs: RegisterAccountInput!): RegisterResponse!
     changePassword(inputs: UpdatePasswordInput!): AccountResponse!
+    deleteAccount(id: ID): DeleteUserResponse!
 }
 
 #================================================================
@@ -75,6 +76,12 @@ type AccountResponse implements ResponseInterface{
 }
 
 type RegisterResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+}
+
+type DeleteUserResponse implements ResponseInterface {
     status: ResponseStatus!
     message: String
     errors: [ErrorsResponse]
