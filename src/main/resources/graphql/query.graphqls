@@ -6,6 +6,7 @@ type Query {
     getLops: LopsResponse!
     getSinhViens: SinhViensResponse!
     getSinhVienById(sinhVienId: ID):SinhVienResponse!
+    getProfile: SinhVienResponse!
 }
 
 

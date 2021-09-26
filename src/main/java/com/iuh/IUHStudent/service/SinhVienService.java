@@ -9,5 +9,4 @@ public interface SinhVienService {
     List<SinhVien> findAllSinhVien();
     void deleteSinhVien(int sinhVienId);
     SinhVien findSinhVienById(int sinhVienId);
-
 }
