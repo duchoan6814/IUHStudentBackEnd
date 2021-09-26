@@ -7,7 +7,7 @@ db_password: saPassword12@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database: mysql
     show-sql: true
 
