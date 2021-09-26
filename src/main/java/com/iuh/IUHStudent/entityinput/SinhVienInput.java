@@ -1,23 +1,19 @@
-package com.iuh.IUHStudent.entity;
+package com.iuh.IUHStudent.entityinput;
 
+import com.iuh.IUHStudent.entity.*;
 import lombok.*;
 
-import javax.persistence.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Date;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-@Table(name = "sinh_vien")
-public class SinhVien {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SinhVienInput {
     private int sinhVienId;
-
     private String maSinhVien;
     private String maHoSo;
     private String image;
@@ -38,14 +34,4 @@ public class SinhVien {
     private Date ngayVaoDang;
     private String email;
     private TonGiao tonGiao;
-
-    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL)
-    private List<SinhVienLopHocPhan> lopHocPhans;
-
-    @ManyToOne
-    @JoinColumn(name = "lop_fk")
-    private Lop lop;
-
-
-
 }

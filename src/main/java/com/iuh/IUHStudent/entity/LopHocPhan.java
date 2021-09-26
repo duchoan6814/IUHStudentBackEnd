@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,12 +24,12 @@ public class LopHocPhan {
     private String tenVietTat;
     private String tenLopHocPhan;
     private int soNhomThucHanh;
-    private TrangThai trangThaiLopHocPhan;
+    private TrangThaiLopHocPhan trangThaiLopHocPhan;
     private int soLuongToiDa;
     private String moTa;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "lopHocPhans")
-    private Set<SinhVien> sinhViens = new HashSet<>();
+    @OneToMany(mappedBy = "lopHocPhan" , cascade = CascadeType.ALL)
+    private List<SinhVienLopHocPhan> sinhViens;
 
     @ManyToOne
     @JoinColumn(name = "hocPhan_fk")

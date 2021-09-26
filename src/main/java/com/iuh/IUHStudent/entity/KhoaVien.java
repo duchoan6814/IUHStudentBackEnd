@@ -19,6 +19,9 @@ public class KhoaVien {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int khoaVienId;
 
+    private String tenKhoaVien;
+    private String lienKet;
+
     @OneToMany(fetch = FetchType.EAGER,targetEntity = ChuyenNganh.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "khoaVien_fk",referencedColumnName = "khoaVienId")
     private Set<ChuyenNganh> chuyenNganhs = new HashSet<>();

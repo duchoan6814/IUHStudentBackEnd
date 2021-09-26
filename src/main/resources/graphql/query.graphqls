@@ -1,16 +1,22 @@
 scalar Date
-
+scalar Boolean
 #selet
 type Query {
     login(username: String!, password: String!): AccountResponse!
     getLops: LopsResponse!
+    getSinhViens: SinhViensResponse!
+    getSinhVienById(sinhVienId: ID):SinhVienResponse!
 }
+
+
 
 #create , update , delete
 type Mutation {
     register(inputs: RegisterAccountInput!): RegisterResponse!
     changePassword(inputs: UpdatePasswordInput!): AccountResponse!
     createLop(tenLop: String!, khoaHoc: String! ): LopResponse!
+    createSinhVien(input: SinhVienInput!):SinhVienResponse!
+    deleteSinhVien(sinhVienId: ID!):SinhVienResponse!
 }
 
 #================================================================
@@ -32,6 +38,30 @@ enum ResponseStatus {
     ERROR
 }
 
+enum TrangThai {
+    DANG_HOC
+    RA_TRUONG
+    BAO_LUU
+}
+
+enum BacDaoTao {
+    DAI_HOC
+    CAO_DANG
+}
+
+enum TonGiao {
+    PHAT_GIAO
+    KHONG
+}
+
+enum DanToc {
+    KINH
+}
+
+enum LoaiHinhDaoTao {
+    TIEN_TIEN
+    DAI_TRA
+}
 #========================================================================
 
 type Account {
@@ -56,6 +86,29 @@ type Lop{
     khoaHoc : String
 }
 
+type SinhVien {
+    sinhVienId:ID
+    maSinhVien:String
+    maHoSo:String
+    #    image:String
+    hoTenDem:String
+    ten:String
+    gioiTinh:Boolean
+    ngaySinh:Date
+    bacDaoTao: BacDaoTao
+    trangThai: TrangThai
+    loaiHinhDaoTao:LoaiHinhDaoTao
+    ngayVaoTruong:Date
+    ngayVaoDoan:Date
+    soDienThoai:String
+    diaChi: String
+    noiSinh: String
+    hoKhauThuongTru:String
+    danToc: DanToc
+    ngayVaoDang: Date
+    email:String
+    tonGiao:TonGiao
+}
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -72,6 +125,29 @@ input CreateUserInput {
 input UpdatePasswordInput {
     currentPassword: String!
     newPassword: String!
+}
+
+
+input SinhVienInput{
+    maSinhVien:String!
+    maHoSo:String!
+    hoTenDem:String!
+    ten:String!
+    gioiTinh: Boolean
+    ngaySinh: Date
+    bacDaoTao: BacDaoTao
+    trangThai: TrangThai
+    loaiHinhDaoTao:LoaiHinhDaoTao
+    ngayVaoTruong:Date
+    ngayVaoDoan:Date
+    soDienThoai:String
+    diaChi: String
+    noiSinh: String
+    hoKhauThuongTru:String
+    danToc: DanToc
+    ngayVaoDang: Date
+    email:String
+    tonGiao:TonGiao
 }
 
 
@@ -102,4 +178,18 @@ type LopsResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:[Lop]
+}
+
+type SinhVienResponse implements ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:SinhVien
+}
+
+type SinhViensResponse implements ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[SinhVien]
 }

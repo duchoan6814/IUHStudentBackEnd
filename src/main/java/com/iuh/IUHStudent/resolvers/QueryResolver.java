@@ -1,12 +1,11 @@
 package com.iuh.IUHStudent.resolvers;
 
 import com.iuh.IUHStudent.entity.Lop;
+import com.iuh.IUHStudent.entity.SinhVien;
 import com.iuh.IUHStudent.repository.LopRepository;
-import com.iuh.IUHStudent.response.AccountResponse;
-import com.iuh.IUHStudent.response.ErrorsResponse;
-import com.iuh.IUHStudent.response.LopsResponse;
-import com.iuh.IUHStudent.response.ResponseStatus;
+import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.service.AccountService;
+import com.iuh.IUHStudent.service.SinhVienService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +27,34 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     private LopRepository lopRepository;
+
+    @Autowired
+    private SinhVienService sinhVienService;
+
+    @PreAuthorize("isAuthenticated()")
+    public SinhViensResponse getSinhViens() {
+        List<SinhVien> sinhViens = sinhVienService.findAllSinhVien();
+        return SinhViensResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(sinhViens)
+                .build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public SinhVienResponse getSinhVienById(int sinhVienId) {
+        SinhVien sinhVien = sinhVienService.findSinhVienById(sinhVienId);
+        if(sinhVien != null){
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(sinhVien)
+                    .build();
+        }
+        return SinhVienResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Khong tim thay sinh vien")
+                .data(null)
+                .build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
