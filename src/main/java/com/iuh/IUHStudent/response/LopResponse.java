@@ -1,17 +1,20 @@
 package com.iuh.IUHStudent.response;
 
 import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.SinhVien;
-import lombok.Builder;
-import lombok.Getter;
+import com.iuh.IUHStudent.entity.Lop;
+import lombok.*;
 
 import java.util.List;
-
-@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
-public class RegisterResponse implements ResponseInterface{
+@Setter
+@Builder
+public class LopResponse implements ResponseInterface{
     private ResponseStatus status;
     private List<ErrorsResponse> errors;
     private String message;
-    private SinhVien data;
+    private Lop data;
+
 }

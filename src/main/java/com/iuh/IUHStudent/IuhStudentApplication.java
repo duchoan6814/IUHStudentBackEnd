@@ -1,15 +1,33 @@
 package com.iuh.IUHStudent;
 
+import com.iuh.IUHStudent.entity.Account;
+import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
+import com.iuh.IUHStudent.repository.AccountRepository;
+import com.iuh.IUHStudent.service.AccountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.servlet.Filter;
+import java.util.Set;
 
 @SpringBootApplication
+@RequiredArgsConstructor
 public class IuhStudentApplication {
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(IuhStudentApplication.class, args);
@@ -18,6 +36,27 @@ public class IuhStudentApplication {
     @Bean
     public Filter OpenFilter() {
         return new OpenEntityManagerInViewFilter();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void doSomethingAfterStartup() {
+
+        AccountInput input = AccountInput.builder()
+                .userName("admin")
+                .password("admin")
+                .build();
+
+        boolean isExistAccount = accountService.exists(input);
+
+        if(isExistAccount) return;
+
+
+        accountRepository.saveAndFlush(Account
+                .builder()
+                .username(input.getUserName())
+                .password(passwordEncoder.encode(input.getPassword()))
+                .roles(Set.of("ADMIN"))
+                .build());
     }
 }
 

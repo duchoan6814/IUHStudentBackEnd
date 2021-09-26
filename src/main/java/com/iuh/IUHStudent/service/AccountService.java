@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.User;
+import com.iuh.IUHStudent.entity.SinhVien;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.BadTokenException;
@@ -24,7 +24,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,9 +51,8 @@ public class AccountService implements UserDetailsService {
     private final SecurityProperties properties;
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private AccountRepository accountRepository;
+
 
     @Override
     @Transactional
@@ -82,21 +80,21 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public Account createAccount(User user, AccountInput input) {
+    public Account createAccount(SinhVien sinhVien, AccountInput input) {
         if (!exists(input)) {
             return accountRepository.saveAndFlush(Account
                     .builder()
                     .username(input.getUserName())
                     .password(passwordEncoder.encode(input.getPassword()))
                     .roles(Set.of(USER_AUTHORITY))
-                    .user(user)
+                    .sinhVien(sinhVien)
                     .build());
         } else {
             throw new UserAlreadyExistsException(input.getUserName());
         }
     }
 
-    private boolean exists(AccountInput input) {
+    public boolean exists(AccountInput input) {
         return accountRepository.existsByUsername(input.getUserName());
     }
 
@@ -110,7 +108,6 @@ public class AccountService implements UserDetailsService {
         }
         return account;
     }
-
 
     public boolean isAdmin() {
         return Optional
@@ -140,20 +137,6 @@ public class AccountService implements UserDetailsService {
         } else {
             return false;
         }
-    }
-
-    @Transactional
-    public User promotePerson(Long personId) {
-        User user = userService.getById(personId);
-        user.getAccount().withRole(ADMIN_AUTHORITY);
-        return user;
-    }
-
-    @Transactional
-    public User unpromotePerson(Long personId) {
-        User user = userService.getById(personId);
-        user.getAccount().withoutRole(ADMIN_AUTHORITY);
-        return user;
     }
 
     private boolean isAnonymous(Authentication authentication) {
