@@ -1,17 +1,18 @@
 package com.iuh.IUHStudent.resolvers;
 
-import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.Image;
-import com.iuh.IUHStudent.entity.User;
+import com.iuh.IUHStudent.entity.*;
+import com.iuh.IUHStudent.entityinput.SinhVienInput;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.BadTokenException;
 import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
+import com.iuh.IUHStudent.repository.LopRepository;
+import com.iuh.IUHStudent.repository.SinhVienRepository;
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.service.AccountService;
+import com.iuh.IUHStudent.service.SinhVienServiceImpl;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,6 +25,79 @@ import java.util.List;
 public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private LopRepository lopRepository;
+
+    @Autowired
+    private SinhVienServiceImpl sinhVienService;
+
+    @PreAuthorize("isAuthenticated()")
+    public SinhVienResponse createSinhVien(SinhVienInput inputs){
+        SinhVien sinhVien = new SinhVien();
+        sinhVien.setMaSinhVien(inputs.getMaSinhVien());
+        sinhVien.setMaHoSo(inputs.getMaHoSo());
+        sinhVien.setHoTenDem(inputs.getHoTenDem());
+        sinhVien.setTen(inputs.getTen());
+//        sinhVien.setImage(inputs.getImage());
+        sinhVien.setGioiTinh(inputs.isGioiTinh());
+        sinhVien.setNgaySinh(inputs.getNgaySinh());
+        sinhVien.setBacDaoTao(inputs.getBacDaoTao());
+        sinhVien.setTrangThai(inputs.getTrangThai());
+        sinhVien.setLoaiHinhDaoTao(inputs.getLoaiHinhDaoTao());
+        sinhVien.setNgayVaoTruong(inputs.getNgayVaoTruong());
+        sinhVien.setNgayVaoDoan(inputs.getNgayVaoDoan());
+        sinhVien.setNgayVaoDang(inputs.getNgayVaoDang());
+        sinhVien.setSoDienThoai(inputs.getSoDienThoai());
+        sinhVien.setDiaChi(inputs.getDiaChi());
+        sinhVien.setDanToc(inputs.getDanToc());
+        sinhVien.setEmail(inputs.getEmail());
+        sinhVien.setTonGiao(inputs.getTonGiao());
+        sinhVien.setHoKhauThuongTru(inputs.getHoKhauThuongTru());
+        sinhVien.setNoiSinh(inputs.getNoiSinh());
+        SinhVien sinhVienResp = sinhVienService.saveSinhVien(sinhVien);
+
+        SinhVienResponse sinhVienResponse = new SinhVienResponse();
+        if (sinhVienResp == null){
+            sinhVienResponse.setMessage("Tao sinh vien khong thanh cong");
+            sinhVienResponse.setStatus(ResponseStatus.ERROR);
+        }else {
+            sinhVienResponse.setMessage("Tao sinh vien thanh cong");
+            sinhVienResponse.setStatus(ResponseStatus.OK);
+            sinhVienResponse.setData(sinhVienResp);
+        }
+        return sinhVienResponse;
+    }
+
+    public SinhVienResponse deleteSinhVien(int sinhVienId) {
+        SinhVien sinhVien = new SinhVien();
+            sinhVienService.deleteSinhVien(sinhVienId);
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa sinh vien thanh cong")
+                    .build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public LopResponse createLop(String tenLop, String khoaHoc) {
+        Lop lop = new Lop();
+        lop.setTenLop(tenLop);
+        lop.setKhoaHoc(khoaHoc);
+
+        Lop lopResp = lopRepository.save(lop);
+
+        LopResponse lopResponse = new LopResponse();
+        if (lopResp == null) {
+            lopResponse.setMessage("Tao lop khong thanh cong");
+            lopResponse.setStatus(ResponseStatus.ERROR);
+
+        } else {
+            lopResponse.setMessage("Tao lop thanh cong");
+            lopResponse.setStatus(ResponseStatus.OK);
+            lopResponse.setData(lopResp);
+        }
+        return lopResponse;
+    }
 
     @PreAuthorize("isAuthenticated()")
     public DeleteUserResponse deleteAccount(long id) {
@@ -105,7 +179,5 @@ public class MutationResolver implements GraphQLMutationResolver {
                     })
                     .build();
         }
-
-
     }
 }
