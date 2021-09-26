@@ -156,41 +156,4 @@ public class MutationResolver implements GraphQLMutationResolver {
         }
     }
 
-//    @PreAuthorize("isAnonymous()")
-//    public RegisterResponse register(RegisterAccountInput inputs) {
-//        try {
-//            List<Image> images = new ArrayList<>();
-//
-//            if (inputs.getUser().getImages() != null) {
-//                for (String name : inputs.getUser().getImages()) {
-//                    images.add(new Image(name));
-//                }
-//            }
-//            accountService.createAccount(
-//                    User.builder()
-//                            .name(inputs.getUser().getName())
-//                            .email(inputs.getUser().getEmail())
-//                            .images(images)
-//                            .build(), AccountInput
-//                            .builder()
-//                            .userName(inputs.getUsername())
-//                            .password(inputs.getPassword())
-//                            .build()
-//            );
-//            return RegisterResponse.builder()
-//                    .status(ResponseStatus.OK)
-//                    .message("Tạo tài khỏan thành công.")
-//                    .build();
-//        } catch (UserAlreadyExistsException ex) {
-//            return RegisterResponse.builder()
-//                    .status(ResponseStatus.ERROR)
-//                    .message("Tạo tài khỏan không thành công.")
-//                    .errors(new ArrayList<ErrorsResponse>() {
-//                        {
-//                            add(ErrorsResponse.builder().message("Tài khỏan đã tồn tại!").build());
-//                        }
-//                    })
-//                    .build();
-//        }
-//    }
 }
