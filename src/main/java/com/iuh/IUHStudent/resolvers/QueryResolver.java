@@ -1,5 +1,6 @@
 package com.iuh.IUHStudent.resolvers;
 
+import com.iuh.IUHStudent.entity.Account;
 import com.iuh.IUHStudent.entity.Lop;
 import com.iuh.IUHStudent.entity.SinhVien;
 import com.iuh.IUHStudent.repository.LopRepository;
@@ -43,7 +44,7 @@ public class QueryResolver implements GraphQLQueryResolver {
     @PreAuthorize("isAuthenticated()")
     public SinhVienResponse getSinhVienById(int sinhVienId) {
         SinhVien sinhVien = sinhVienService.findSinhVienById(sinhVienId);
-        if(sinhVien != null){
+        if (sinhVien != null) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(sinhVien)
@@ -87,5 +88,27 @@ public class QueryResolver implements GraphQLQueryResolver {
                     })
                     .build();
         }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public SinhVienResponse getProfile() {
+        Account account = accountService.getCurrentAccount();
+        if (account == null) {
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Lay thong tin sinh vien khong thanh cong!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Xảy ra lỗi trong quá trình get user"));
+                        }
+                    })
+                    .build();
+        }
+
+        return SinhVienResponse.builder()
+                .status(ResponseStatus.OK)
+                .message("Lay thong tin sinh vien thanh cong!")
+                .data(account.getSinhVien())
+                .build();
     }
 }

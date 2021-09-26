@@ -32,50 +32,63 @@ public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     private SinhVienServiceImpl sinhVienService;
 
-    @PreAuthorize("isAuthenticated()")
-    public SinhVienResponse createSinhVien(SinhVienInput inputs){
-        SinhVien sinhVien = new SinhVien();
-        sinhVien.setMaSinhVien(inputs.getMaSinhVien());
-        sinhVien.setMaHoSo(inputs.getMaHoSo());
-        sinhVien.setHoTenDem(inputs.getHoTenDem());
-        sinhVien.setTen(inputs.getTen());
-//        sinhVien.setImage(inputs.getImage());
-        sinhVien.setGioiTinh(inputs.isGioiTinh());
-        sinhVien.setNgaySinh(inputs.getNgaySinh());
-        sinhVien.setBacDaoTao(inputs.getBacDaoTao());
-        sinhVien.setTrangThai(inputs.getTrangThai());
-        sinhVien.setLoaiHinhDaoTao(inputs.getLoaiHinhDaoTao());
-        sinhVien.setNgayVaoTruong(inputs.getNgayVaoTruong());
-        sinhVien.setNgayVaoDoan(inputs.getNgayVaoDoan());
-        sinhVien.setNgayVaoDang(inputs.getNgayVaoDang());
-        sinhVien.setSoDienThoai(inputs.getSoDienThoai());
-        sinhVien.setDiaChi(inputs.getDiaChi());
-        sinhVien.setDanToc(inputs.getDanToc());
-        sinhVien.setEmail(inputs.getEmail());
-        sinhVien.setTonGiao(inputs.getTonGiao());
-        sinhVien.setHoKhauThuongTru(inputs.getHoKhauThuongTru());
-        sinhVien.setNoiSinh(inputs.getNoiSinh());
-        SinhVien sinhVienResp = sinhVienService.saveSinhVien(sinhVien);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public RegisterResponse createSinhVien(RegisterAccountInput inputs) {
 
-        SinhVienResponse sinhVienResponse = new SinhVienResponse();
-        if (sinhVienResp == null){
-            sinhVienResponse.setMessage("Tao sinh vien khong thanh cong");
-            sinhVienResponse.setStatus(ResponseStatus.ERROR);
-        }else {
-            sinhVienResponse.setMessage("Tao sinh vien thanh cong");
-            sinhVienResponse.setStatus(ResponseStatus.OK);
-            sinhVienResponse.setData(sinhVienResp);
+        SinhVien sinhVien = SinhVien.builder()
+                .maSinhVien(inputs.getSinhVien().getMaSinhVien())
+                .ngaySinh(inputs.getSinhVien().getNgaySinh())
+                .maHoSo(inputs.getSinhVien().getMaHoSo())
+                .hoTenDem(inputs.getSinhVien().getHoTenDem())
+                .ten(inputs.getSinhVien().getTen())
+                .gioiTinh(inputs.getSinhVien().isGioiTinh())
+                .bacDaoTao(inputs.getSinhVien().getBacDaoTao())
+                .trangThai(inputs.getSinhVien().getTrangThai())
+                .loaiHinhDaoTao(inputs.getSinhVien().getLoaiHinhDaoTao())
+                .ngayVaoTruong(inputs.getSinhVien().getNgayVaoTruong())
+                .ngayVaoDoan(inputs.getSinhVien().getNgayVaoDoan())
+                .soDienThoai(inputs.getSinhVien().getSoDienThoai())
+                .diaChi(inputs.getSinhVien().getDiaChi())
+                .noiSinh(inputs.getSinhVien().getNoiSinh())
+                .hoKhauThuongTru(inputs.getSinhVien().getHoKhauThuongTru())
+                .danToc(inputs.getSinhVien().getDanToc())
+                .ngayVaoDang(inputs.getSinhVien().getNgayVaoDang())
+                .email(inputs.getSinhVien().getEmail())
+                .tonGiao(inputs.getSinhVien().getTonGiao())
+                .build();
+
+        AccountInput input = AccountInput.builder()
+                .userName(inputs.getUsername())
+                .password(inputs.getPassword())
+                .build();
+
+        try {
+            Account account = accountService.createAccount(sinhVien, input);
+            return RegisterResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo sinh viên thành công")
+                    .data(account.getSinhVien())
+                    .build();
+        } catch (UserAlreadyExistsException exception) {
+            return RegisterResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo sinh viên không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Sinh viên đã tồn tại!"));
+                        }
+                    })
+                    .build();
         }
-        return sinhVienResponse;
     }
 
     public SinhVienResponse deleteSinhVien(int sinhVienId) {
         SinhVien sinhVien = new SinhVien();
-            sinhVienService.deleteSinhVien(sinhVienId);
-            return SinhVienResponse.builder()
-                    .status(ResponseStatus.OK)
-                    .message("Xoa sinh vien thanh cong")
-                    .build();
+        sinhVienService.deleteSinhVien(sinhVienId);
+        return SinhVienResponse.builder()
+                .status(ResponseStatus.OK)
+                .message("Xoa sinh vien thanh cong")
+                .build();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -102,12 +115,12 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("isAuthenticated()")
     public DeleteUserResponse deleteAccount(long id) {
         boolean isDeleted = accountService.deleteUser(id);
-        if(isDeleted) {
+        if (isDeleted) {
             DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
             deleteUserResponse.setStatus(ResponseStatus.OK);
             deleteUserResponse.setMessage("Xoa user thanh cong");
             return deleteUserResponse;
-        }else {
+        } else {
             DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
             deleteUserResponse.setStatus(ResponseStatus.ERROR);
             deleteUserResponse.setMessage("Xoa user khong thanh cong");
@@ -143,41 +156,4 @@ public class MutationResolver implements GraphQLMutationResolver {
         }
     }
 
-    @PreAuthorize("isAnonymous()")
-    public RegisterResponse register(RegisterAccountInput inputs) {
-        try {
-            List<Image> images = new ArrayList<>();
-
-            if (inputs.getUser().getImages() != null) {
-                for (String name : inputs.getUser().getImages()) {
-                    images.add(new Image(name));
-                }
-            }
-            accountService.createAccount(
-                    User.builder()
-                            .name(inputs.getUser().getName())
-                            .email(inputs.getUser().getEmail())
-                            .images(images)
-                            .build(), AccountInput
-                            .builder()
-                            .userName(inputs.getUsername())
-                            .password(inputs.getPassword())
-                            .build()
-            );
-            return RegisterResponse.builder()
-                    .status(ResponseStatus.OK)
-                    .message("Tạo tài khỏan thành công.")
-                    .build();
-        } catch (UserAlreadyExistsException ex) {
-            return RegisterResponse.builder()
-                    .status(ResponseStatus.ERROR)
-                    .message("Tạo tài khỏan không thành công.")
-                    .errors(new ArrayList<ErrorsResponse>() {
-                        {
-                            add(ErrorsResponse.builder().message("Tài khỏan đã tồn tại!").build());
-                        }
-                    })
-                    .build();
-        }
-    }
 }

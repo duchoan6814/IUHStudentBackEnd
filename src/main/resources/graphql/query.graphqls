@@ -6,16 +6,16 @@ type Query {
     getLops: LopsResponse!
     getSinhViens: SinhViensResponse!
     getSinhVienById(sinhVienId: ID):SinhVienResponse!
+    getProfile: SinhVienResponse!
 }
 
 
 
 #create , update , delete
 type Mutation {
-    register(inputs: RegisterAccountInput!): RegisterResponse!
     changePassword(inputs: UpdatePasswordInput!): AccountResponse!
     createLop(tenLop: String!, khoaHoc: String! ): LopResponse!
-    createSinhVien(input: SinhVienInput!):SinhVienResponse!
+    createSinhVien(inputs: RegisterAccountInput!): RegisterResponse!
     deleteSinhVien(sinhVienId: ID!):SinhVienResponse!
 }
 
@@ -66,18 +66,7 @@ enum LoaiHinhDaoTao {
 
 type Account {
     token: String
-    user: User
-}
-
-type User {
-    id: ID!
-    name: String!
-    email: String
-    images: [Image]
-}
-
-type Image {
-    name: String
+    sinhVien: SinhVien
 }
 
 type Lop{
@@ -113,13 +102,7 @@ type SinhVien {
 input RegisterAccountInput {
     username: String!
     password: String!
-    user: CreateUserInput!
-}
-
-input CreateUserInput {
-    name: String!
-    email: String
-    images: [String]
+    sinhVien: SinhVienInput!
 }
 
 input UpdatePasswordInput {
@@ -164,6 +147,7 @@ type RegisterResponse implements ResponseInterface {
     status: ResponseStatus!
     message: String
     errors: [ErrorsResponse]
+    data: SinhVien
 }
 
 type LopResponse implements ResponseInterface {

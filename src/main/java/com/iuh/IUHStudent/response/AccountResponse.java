@@ -1,7 +1,6 @@
 package com.iuh.IUHStudent.response;
 
 import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.User;
 import lombok.Builder;
 
 import java.util.List;

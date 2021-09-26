@@ -25,10 +25,6 @@ public class Account {
     private Set<String> roles;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sinhVienId")
     private SinhVien sinhVien;
 
