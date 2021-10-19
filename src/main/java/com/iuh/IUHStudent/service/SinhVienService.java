@@ -7,6 +7,7 @@ import java.util.List;
 public interface SinhVienService {
     SinhVien saveSinhVien(SinhVien sinhVien);
     List<SinhVien> findAllSinhVien();
-    void deleteSinhVien(int sinhVienId);
+    boolean deleteSinhVien(int sinhVienId);
     SinhVien findSinhVienById(int sinhVienId);
+    SinhVien findSinhVienByMa(String maSinhVien);
 }

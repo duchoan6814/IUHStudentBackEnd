@@ -3,17 +3,14 @@ package com.iuh.IUHStudent.entityinput;
 import com.iuh.IUHStudent.entity.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class SinhVienInput {
-    private String maSinhVien;
+public class SinhVienUpdateInput {
     private String maHoSo;
     private String image;
     private String hoTenDem;
@@ -33,5 +30,4 @@ public class SinhVienInput {
     private Date ngayVaoDang;
     private String email;
     private TonGiao tonGiao;
-//    private Lop lop;
 }

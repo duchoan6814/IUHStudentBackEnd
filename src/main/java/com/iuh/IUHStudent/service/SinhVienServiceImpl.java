@@ -1,6 +1,8 @@
 package com.iuh.IUHStudent.service;
 
+import com.iuh.IUHStudent.entity.Lop;
 import com.iuh.IUHStudent.entity.SinhVien;
+import com.iuh.IUHStudent.exception.LopNotFoundException;
 import com.iuh.IUHStudent.exception.UserNotFoundException;
 import com.iuh.IUHStudent.repository.SinhVienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class SinhVienServiceImpl implements SinhVienService{
     @Autowired
     private SinhVienRepository sinhVienRepository;
 
+    @Autowired
+    private LopService lopService;
+
     @Override
     public SinhVien saveSinhVien(SinhVien sinhVien) {
         sinhVienRepository.save(sinhVien);
@@ -22,13 +27,17 @@ public class SinhVienServiceImpl implements SinhVienService{
 
     @Override
     public List<SinhVien> findAllSinhVien() {
-
         return sinhVienRepository.findAll();
     }
 
     @Override
-    public void deleteSinhVien(int sinhVienId) {
+    public boolean deleteSinhVien(int sinhVienId) {
+        SinhVien sinhVien = findSinhVienById(sinhVienId);
+        if(sinhVien == null){
+            throw new UserNotFoundException((long) sinhVienId);
+        }
         sinhVienRepository.deleteById(sinhVienId);
+        return true;
     }
 
     @Override
@@ -41,4 +50,13 @@ public class SinhVienServiceImpl implements SinhVienService{
         return sinhVien;
     }
 
+    @Override
+    public SinhVien findSinhVienByMa(String maSinhVien) {
+        Optional<SinhVien> result = sinhVienRepository.findSinhVienByMaSinhVien(maSinhVien);
+        SinhVien sinhVien = null;
+        if (result.isPresent()) {
+            sinhVien = result.get();
+        }
+        return sinhVien;
+    }
 }

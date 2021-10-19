@@ -12,4 +12,5 @@ public class RegisterAccountInput {
     private String password;
     private SinhVienInput sinhVien;
 
+
 }

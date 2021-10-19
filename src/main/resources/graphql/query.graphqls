@@ -4,6 +4,7 @@ scalar Boolean
 type Query {
     login(username: String!, password: String!): AccountResponse!
     getLops: LopsResponse!
+#    getLopById(lopId:ID!):LopResponse!
     getSinhViens: SinhViensResponse!
     getSinhVienById(sinhVienId: ID):SinhVienResponse!
     getProfile: SinhVienResponse!
@@ -17,6 +18,9 @@ type Mutation {
     createLop(tenLop: String!, khoaHoc: String! ): LopResponse!
     createSinhVien(inputs: RegisterAccountInput!): RegisterResponse!
     deleteSinhVien(sinhVienId: ID!):SinhVienResponse!
+    addSinhVienVaoLop(sinhVienId: ID,lopId: ID!): SinhVienResponse!
+    updateSinhVien(inputs:SinhVienUpdateInput!,maSinhVien:String!):UpdateSVResponse!
+
 }
 
 #================================================================
@@ -79,7 +83,7 @@ type SinhVien {
     sinhVienId:ID
     maSinhVien:String
     maHoSo:String
-    #    image:String
+    image:String
     hoTenDem:String
     ten:String
     gioiTinh:Boolean
@@ -109,7 +113,11 @@ input UpdatePasswordInput {
     currentPassword: String!
     newPassword: String!
 }
-
+input LopInput {
+    id:ID
+    tenLop:String
+    khoaHoc:String
+}
 
 input SinhVienInput{
     maSinhVien:String!
@@ -133,6 +141,26 @@ input SinhVienInput{
     tonGiao:TonGiao
 }
 
+input SinhVienUpdateInput{
+    maHoSo:String
+    hoTenDem:String
+    ten:String
+    gioiTinh: Boolean
+    ngaySinh: Date
+    bacDaoTao: BacDaoTao
+    trangThai: TrangThai
+    loaiHinhDaoTao:LoaiHinhDaoTao
+    ngayVaoTruong:Date
+    ngayVaoDoan:Date
+    soDienThoai:String
+    diaChi: String
+    noiSinh: String
+    hoKhauThuongTru:String
+    danToc: DanToc
+    ngayVaoDang: Date
+    email:String
+    tonGiao:TonGiao
+}
 
 #==========================================================================================
 
@@ -176,4 +204,11 @@ type SinhViensResponse implements ResponseInterface{
     message: String
     errors: [ErrorsResponse]
     data:[SinhVien]
+}
+
+type UpdateSVResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:SinhVien
 }

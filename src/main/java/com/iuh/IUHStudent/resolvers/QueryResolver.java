@@ -5,6 +5,8 @@ import com.iuh.IUHStudent.entity.Lop;
 import com.iuh.IUHStudent.entity.SinhVien;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.response.*;
+import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
+import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
 import com.iuh.IUHStudent.service.AccountService;
 import com.iuh.IUHStudent.service.SinhVienService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
