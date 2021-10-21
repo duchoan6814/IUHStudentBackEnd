@@ -1,17 +1,20 @@
 package com.iuh.IUHStudent.resolvers;
 
 import com.iuh.IUHStudent.entity.*;
-import com.iuh.IUHStudent.entityinput.SinhVienInput;
+import com.iuh.IUHStudent.entityinput.SinhVienUpdateInput;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.BadTokenException;
+import com.iuh.IUHStudent.exception.LopNotFoundException;
 import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
+import com.iuh.IUHStudent.exception.UserNotFoundException;
 import com.iuh.IUHStudent.repository.LopRepository;
-import com.iuh.IUHStudent.repository.SinhVienRepository;
 import com.iuh.IUHStudent.response.*;
-import com.iuh.IUHStudent.service.AccountService;
-import com.iuh.IUHStudent.service.SinhVienServiceImpl;
+import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
+import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
+import com.iuh.IUHStudent.response.sinhvien.UpdateSVResponse;
+import com.iuh.IUHStudent.service.*;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +33,10 @@ public class MutationResolver implements GraphQLMutationResolver {
     private LopRepository lopRepository;
 
     @Autowired
-    private SinhVienServiceImpl sinhVienService;
+    private LopService lopService;
+
+    @Autowired
+    private SinhVienService sinhVienService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public RegisterResponse createSinhVien(RegisterAccountInput inputs) {
@@ -81,17 +87,100 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     public SinhVienResponse deleteSinhVien(int sinhVienId) {
         SinhVien sinhVien = new SinhVien();
-        sinhVienService.deleteSinhVien(sinhVienId);
-        return SinhVienResponse.builder()
-                .status(ResponseStatus.OK)
-                .message("Xoa sinh vien thanh cong")
-                .build();
+        try {
+            sinhVienService.deleteSinhVien(sinhVienId);
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa sinh vien thanh cong")
+                    .build();
+        }catch (UserNotFoundException e) {
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xoa khong thanh công")
+                    .errors(new ArrayList<>(){
+                        {
+                            add(new ErrorsResponse("Khong tim thay sinh vien"));
+                        }
+                    })
+                    .build();
+        }
+
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public SinhVienResponse addSinhVienVaoLop(int sinhVienId, int lopId) {
+        try{
+           SinhVien sinhVien = lopService.addSinhVienVaoLop(sinhVienId,lopId);
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Them sinh vien vao lop thanh cong")
+                    .data(sinhVien)
+                    .build();
+        } catch (LopNotFoundException e) {
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Them sinh vien vao lop khong thanh công")
+                    .errors(new ArrayList<>(){
+                        {
+                            add(new ErrorsResponse("Khong tim thay lop"));
+                        }
+                    })
+                    .build();
+        }catch (UserNotFoundException e) {
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Them sinh vien vao lop khong thanh công")
+                    .errors(new ArrayList<>() {
+                        {
+                            add(new ErrorsResponse("Khong tim thay sinh vien"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UpdateSVResponse updateSinhVien(SinhVienUpdateInput inputs, String maSinhVien) {
+        SinhVien sinhVien = sinhVienService.findSinhVienByMa(maSinhVien);
+        if (sinhVien != null) {
+            sinhVien.setMaHoSo(inputs.getMaHoSo());
+            sinhVien.setHoTenDem(inputs.getHoTenDem());
+            sinhVien.setTen(inputs.getTen());
+            sinhVien.setImage(inputs.getImage());
+            sinhVien.setGioiTinh(inputs.isGioiTinh());
+            sinhVien.setBacDaoTao(inputs.getBacDaoTao());
+            sinhVien.setTrangThai(inputs.getTrangThai());
+            sinhVien.setLoaiHinhDaoTao(inputs.getLoaiHinhDaoTao());
+            sinhVien.setNgayVaoTruong(inputs.getNgayVaoTruong());
+            sinhVien.setNgaySinh(inputs.getNgaySinh());
+            sinhVien.setNgayVaoDoan(inputs.getNgayVaoDoan());
+            sinhVien.setSoDienThoai(inputs.getSoDienThoai());
+            sinhVien.setDiaChi(inputs.getDiaChi());
+            sinhVien.setNoiSinh(inputs.getNoiSinh());
+            sinhVien.setHoKhauThuongTru(inputs.getHoKhauThuongTru());
+            sinhVien.setDanToc(inputs.getDanToc());
+            sinhVien.setNgayVaoDang(inputs.getNgayVaoDang());
+            sinhVien.setEmail(inputs.getEmail());
+            sinhVien.setTonGiao(inputs.getTonGiao());
+            sinhVienService.saveSinhVien(sinhVien);
+            return UpdateSVResponse.builder()
+                    .data(sinhVien)
+                    .message("update sinh viên thành công").build();
+        }
+        return UpdateSVResponse.builder()
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy sinh viên"));
+                    }
+                })
+                .message("update sinh viên không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     public LopResponse createLop(String tenLop, String khoaHoc) {
         Lop lop = new Lop();
         lop.setTenLop(tenLop);

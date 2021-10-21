@@ -12,4 +12,5 @@ public class UserNotFoundException extends RuntimeException {
     public String getMessage() {
         return MessageFormat.format("User with ID ''{0}'' isn''t available", id);
     }
+
 }
