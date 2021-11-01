@@ -1,18 +1,17 @@
 package com.iuh.IUHStudent.resolvers;
 
 import com.iuh.IUHStudent.entity.*;
+import com.iuh.IUHStudent.entityinput.KhoaInput;
 import com.iuh.IUHStudent.entityinput.SinhVienUpdateInput;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
-import com.iuh.IUHStudent.exception.BadTokenException;
-import com.iuh.IUHStudent.exception.LopNotFoundException;
-import com.iuh.IUHStudent.exception.UserAlreadyExistsException;
-import com.iuh.IUHStudent.exception.UserNotFoundException;
+import com.iuh.IUHStudent.exception.*;
+import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.response.*;
+import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
-import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
 import com.iuh.IUHStudent.response.sinhvien.UpdateSVResponse;
 import com.iuh.IUHStudent.service.*;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -22,7 +21,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class MutationResolver implements GraphQLMutationResolver {
@@ -37,6 +35,12 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @Autowired
     private SinhVienService sinhVienService;
+
+    @Autowired
+    private KhoaRepository khoaRepository;
+
+    @Autowired
+    private KhoaServiceImpl khoaService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public RegisterResponse createSinhVien(RegisterAccountInput inputs) {
@@ -89,7 +93,6 @@ public class MutationResolver implements GraphQLMutationResolver {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhVienResponse deleteSinhVien(int sinhVienId) {
-        SinhVien sinhVien = new SinhVien();
         try {
             sinhVienService.deleteSinhVien(sinhVienId);
             return SinhVienResponse.builder()
@@ -142,6 +145,31 @@ public class MutationResolver implements GraphQLMutationResolver {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public KhoaResponse createKhoa(KhoaInput inputs) {
+        KhoaVien khoa = KhoaVien.builder()
+                .tenKhoaVien(inputs.getTenKhoaVien())
+                .lienKet(inputs.getLienKet())
+                .build();
+        try {
+            KhoaVien khoaResp = khoaRepository.save(khoa);
+            return KhoaResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo khoa thành công")
+                    .data(khoaResp)
+                    .build();
+        } catch (KhoaNotFoundException exception) {
+            return KhoaResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo khoa không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Khoa đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public UpdateSVResponse updateSinhVien(SinhVienUpdateInput inputs, String maSinhVien) {
@@ -178,6 +206,49 @@ public class MutationResolver implements GraphQLMutationResolver {
                     }
                 })
                 .message("update sinh viên không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public KhoaResponse updateKhoa(KhoaInput inputs,int khoaId) {
+        KhoaVien khoa = khoaService.findKhoaById(khoaId);
+            if(khoa != null) {
+                khoa.setTenKhoaVien(inputs.getTenKhoaVien());
+                khoa.setLienKet(inputs.getLienKet());
+                khoaRepository.save(khoa);
+                return KhoaResponse.builder()
+                        .status(ResponseStatus.OK)
+                        .data(khoa)
+                        .message("update khoa thành công").build();
+            }
+                return KhoaResponse.builder()
+                        .status(ResponseStatus.ERROR)
+                        .errors(new ArrayList<>() {
+                            {
+                                add(new ErrorsResponse("Không tìm thấy khoa"));
+                            }
+                        })
+                        .message("update khoa không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public KhoaResponse deleteKhoa(int khoaId) {
+        try {
+            khoaService.deleteKhoa(khoaId);
+            return KhoaResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa khoa thanh cong")
+                    .build();
+        }catch (KhoaNotFoundException e) {
+            return KhoaResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xoa khong thanh công")
+                    .errors(new ArrayList<>(){
+                        {
+                            add(new ErrorsResponse("Khong tim thay khoa"));
+                        }
+                    })
+                    .build();
+        }
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

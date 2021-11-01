@@ -3,7 +3,6 @@ package com.iuh.IUHStudent.entityinput;
 import com.iuh.IUHStudent.entity.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -33,5 +32,4 @@ public class SinhVienInput {
     private Date ngayVaoDang;
     private String email;
     private TonGiao tonGiao;
-//    private Lop lop;
 }

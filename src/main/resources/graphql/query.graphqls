@@ -6,7 +6,9 @@ type Query {
     getLops: LopsResponse!
 #    getLopById(lopId:ID!):LopResponse!
     getSinhViens: SinhViensResponse!
-    getSinhVienById(sinhVienId: ID):SinhVienResponse!
+    getSinhVienById(sinhVienId: ID!):SinhVienResponse!
+    getKhoas: KhoasResponse!
+    getKhoaById(khoaVienId:ID!):KhoaResponse!
     getProfile: SinhVienResponse!
 }
 
@@ -20,6 +22,9 @@ type Mutation {
     deleteSinhVien(sinhVienId: ID!):SinhVienResponse!
     addSinhVienVaoLop(sinhVienId: ID,lopId: ID!): SinhVienResponse!
     updateSinhVien(inputs:SinhVienUpdateInput!,maSinhVien:String!):UpdateSVResponse!
+    createKhoa(inputs: KhoaInput!):KhoaResponse!
+    updateKhoa(inputs: KhoaInput!,maKhoa:ID!):KhoaResponse!
+    deleteKhoa(khoaId: ID!):KhoaResponse!
 
 }
 
@@ -102,6 +107,12 @@ type SinhVien {
     email:String
     tonGiao:TonGiao
 }
+
+type Khoa {
+    khoaVienId: ID
+    tenKhoaVien:String
+    lienKet:String
+}
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -162,6 +173,11 @@ input SinhVienUpdateInput{
     tonGiao:TonGiao
 }
 
+input KhoaInput {
+     tenKhoaVien:String
+     lienKet:String
+}
+
 #==========================================================================================
 
 type AccountResponse implements ResponseInterface{
@@ -211,4 +227,18 @@ type UpdateSVResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:SinhVien
+}
+
+type KhoaResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:Khoa
+}
+
+type KhoasResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[Khoa]
 }
