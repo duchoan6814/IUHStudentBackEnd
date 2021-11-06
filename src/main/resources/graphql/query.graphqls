@@ -10,6 +10,8 @@ type Query {
     getKhoas: KhoasResponse!
     getKhoaById(khoaVienId:ID!):KhoaResponse!
     getProfile: SinhVienResponse!
+    getChuyenNganhs: ChuyenNganhsResponse!
+    getChuyenNganhById(chuyenNganhId: ID!):ChuyenNganhResponse!
 }
 
 
@@ -25,6 +27,9 @@ type Mutation {
     createKhoa(inputs: KhoaInput!):KhoaResponse!
     updateKhoa(inputs: KhoaInput!,maKhoa:ID!):KhoaResponse!
     deleteKhoa(khoaId: ID!):KhoaResponse!
+    createChuyenNganh(inputs: ChuyenNganhInput!):ChuyenNganhResponse!
+    updateChuyenNganh(inputs: ChuyenNganhInput!,chuyenNganhId:ID!):ChuyenNganhResponse!
+    deleteChuyenNganh(chuyenNganhId:ID!):ChuyenNganhResponse!
 
 }
 
@@ -113,6 +118,11 @@ type Khoa {
     tenKhoaVien:String
     lienKet:String
 }
+
+type ChuyenNganh {
+    chuyenNganhId: ID
+    tenChuyenNganh: String
+}
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -178,6 +188,10 @@ input KhoaInput {
      lienKet:String
 }
 
+input ChuyenNganhInput {
+    tenChuyenNganh: String!
+}
+
 #==========================================================================================
 
 type AccountResponse implements ResponseInterface{
@@ -241,4 +255,18 @@ type KhoasResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:[Khoa]
+}
+
+type ChuyenNganhResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:ChuyenNganh
+}
+
+type ChuyenNganhsResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[ChuyenNganh]
 }

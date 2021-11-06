@@ -1,12 +1,14 @@
 package com.iuh.IUHStudent.resolvers;
 
 import com.iuh.IUHStudent.entity.*;
+import com.iuh.IUHStudent.entityinput.ChuyenNganhInput;
 import com.iuh.IUHStudent.entityinput.KhoaInput;
 import com.iuh.IUHStudent.entityinput.SinhVienUpdateInput;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.*;
+import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
 import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.response.*;
@@ -40,7 +42,13 @@ public class MutationResolver implements GraphQLMutationResolver {
     private KhoaRepository khoaRepository;
 
     @Autowired
-    private KhoaServiceImpl khoaService;
+    private KhoaService khoaService;
+
+    @Autowired
+    private ChuyenNganhRespository chuyenNganhResponse;
+
+    @Autowired
+    private ChuyenNganhService chuyenNganhService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public RegisterResponse createSinhVien(RegisterAccountInput inputs) {
@@ -81,7 +89,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         } catch (UserAlreadyExistsException exception) {
             return RegisterResponse.builder()
-                    .status(ResponseStatus.OK)
+                    .status(ResponseStatus.ERROR)
                     .message("Tạo sinh viên không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {
                         {
@@ -160,7 +168,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         } catch (KhoaNotFoundException exception) {
             return KhoaResponse.builder()
-                    .status(ResponseStatus.OK)
+                    .status(ResponseStatus.ERROR)
                     .message("Tạo khoa không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {
                         {
@@ -245,6 +253,73 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .errors(new ArrayList<>(){
                         {
                             add(new ErrorsResponse("Khong tim thay khoa"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhResponse createChuyenNganh(ChuyenNganhInput inputs) {
+        ChuyenNganh chuyenNganh = ChuyenNganh.builder()
+                .tenChuyenNganh(inputs.getTenChuyenNganh())
+                .build();
+        try {
+            ChuyenNganh chuyenNganhResp = chuyenNganhResponse.save(chuyenNganh);
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo chuyên ngành thành công")
+                    .data(chuyenNganhResp)
+                    .build();
+        } catch (ChuyenNganhNotFoundException exception) {
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Tạo chuyên ngành không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Chuyên ngành đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhResponse updateChuyenNganh(ChuyenNganhInput inputs , int chuyenNganhId) {
+        ChuyenNganh chuyenNganh = chuyenNganhService.findChuyenNganhById(chuyenNganhId);
+        if(chuyenNganh != null) {
+            chuyenNganh.setTenChuyenNganh(inputs.getTenChuyenNganh());
+            chuyenNganhResponse.save(chuyenNganh);
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(chuyenNganh)
+                    .message("update Chuyên ngành thành công").build();
+        }
+        return ChuyenNganhResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy chuyên ngành"));
+                    }
+                })
+                .message("update chuyên ngành không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhResponse deleteChuyenNganh(int chuyenNganhId) {
+        try {
+            chuyenNganhService.deleteChuyenNganh(chuyenNganhId);
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa chuyên ngành thành công")
+                    .build();
+        }catch (ChuyenNganhNotFoundException e) {
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xóa không thành công")
+                    .errors(new ArrayList<>(){
+                        {
+                            add(new ErrorsResponse("Không tìm thấy chuyên ngành"));
                         }
                     })
                     .build();
