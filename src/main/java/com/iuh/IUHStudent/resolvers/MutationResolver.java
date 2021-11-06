@@ -17,7 +17,11 @@ import com.iuh.IUHStudent.service.*;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,6 +30,9 @@ import java.util.ArrayList;
 public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
 
     @Autowired
     private LopRepository lopRepository;
@@ -41,6 +48,31 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @Autowired
     private KhoaServiceImpl khoaService;
+
+    @PreAuthorize("isAnonymous()")
+    public AccountResponse login(String username, String password) {
+        UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            SecurityContextHolder.getContext().setAuthentication(authenticationProvider.authenticate(credentials));
+            return AccountResponse
+                    .builder()
+                    .status(ResponseStatus.OK)
+                    .message("Đăng nhập thành công.")
+                    .data(accountService.getCurrentAccount())
+                    .build();
+        } catch (AuthenticationException ex) {
+            return AccountResponse
+                    .builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Đăng nhập không thành công.")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Tên tài khoản hoặc mật khẩu không đúng!"));
+                        }
+                    })
+                    .build();
+        }
+    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public RegisterResponse createSinhVien(RegisterAccountInput inputs) {
@@ -91,6 +123,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhVienResponse deleteSinhVien(int sinhVienId) {
         try {
@@ -99,11 +132,11 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .status(ResponseStatus.OK)
                     .message("Xoa sinh vien thanh cong")
                     .build();
-        }catch (UserNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Xoa khong thanh công")
-                    .errors(new ArrayList<>(){
+                    .errors(new ArrayList<>() {
                         {
                             add(new ErrorsResponse("Khong tim thay sinh vien"));
                         }
@@ -115,8 +148,8 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhVienResponse addSinhVienVaoLop(int sinhVienId, int lopId) {
-        try{
-           SinhVien sinhVien = lopService.addSinhVienVaoLop(sinhVienId,lopId);
+        try {
+            SinhVien sinhVien = lopService.addSinhVienVaoLop(sinhVienId, lopId);
             return SinhVienResponse.builder()
                     .status(ResponseStatus.OK)
                     .message("Them sinh vien vao lop thanh cong")
@@ -126,13 +159,13 @@ public class MutationResolver implements GraphQLMutationResolver {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Them sinh vien vao lop khong thanh công")
-                    .errors(new ArrayList<>(){
+                    .errors(new ArrayList<>() {
                         {
                             add(new ErrorsResponse("Khong tim thay lop"));
                         }
                     })
                     .build();
-        }catch (UserNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Them sinh vien vao lop khong thanh công")
@@ -209,25 +242,25 @@ public class MutationResolver implements GraphQLMutationResolver {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    public KhoaResponse updateKhoa(KhoaInput inputs,int khoaId) {
+    public KhoaResponse updateKhoa(KhoaInput inputs, int khoaId) {
         KhoaVien khoa = khoaService.findKhoaById(khoaId);
-            if(khoa != null) {
-                khoa.setTenKhoaVien(inputs.getTenKhoaVien());
-                khoa.setLienKet(inputs.getLienKet());
-                khoaRepository.save(khoa);
-                return KhoaResponse.builder()
-                        .status(ResponseStatus.OK)
-                        .data(khoa)
-                        .message("update khoa thành công").build();
-            }
-                return KhoaResponse.builder()
-                        .status(ResponseStatus.ERROR)
-                        .errors(new ArrayList<>() {
-                            {
-                                add(new ErrorsResponse("Không tìm thấy khoa"));
-                            }
-                        })
-                        .message("update khoa không thành công").build();
+        if (khoa != null) {
+            khoa.setTenKhoaVien(inputs.getTenKhoaVien());
+            khoa.setLienKet(inputs.getLienKet());
+            khoaRepository.save(khoa);
+            return KhoaResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(khoa)
+                    .message("update khoa thành công").build();
+        }
+        return KhoaResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy khoa"));
+                    }
+                })
+                .message("update khoa không thành công").build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -238,11 +271,11 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .status(ResponseStatus.OK)
                     .message("Xoa khoa thanh cong")
                     .build();
-        }catch (KhoaNotFoundException e) {
+        } catch (KhoaNotFoundException e) {
             return KhoaResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Xoa khong thanh công")
-                    .errors(new ArrayList<>(){
+                    .errors(new ArrayList<>() {
                         {
                             add(new ErrorsResponse("Khong tim thay khoa"));
                         }
