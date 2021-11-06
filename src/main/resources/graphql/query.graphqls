@@ -2,7 +2,6 @@ scalar Date
 scalar Boolean
 #selet
 type Query {
-    login(username: String!, password: String!): AccountResponse!
     getLops: LopsResponse!
 #    getLopById(lopId:ID!):LopResponse!
     getSinhViens: SinhViensResponse!
@@ -25,7 +24,7 @@ type Mutation {
     createKhoa(inputs: KhoaInput!):KhoaResponse!
     updateKhoa(inputs: KhoaInput!,maKhoa:ID!):KhoaResponse!
     deleteKhoa(khoaId: ID!):KhoaResponse!
-
+    login(username: String!, password: String!): AccountResponse!
 }
 
 #================================================================

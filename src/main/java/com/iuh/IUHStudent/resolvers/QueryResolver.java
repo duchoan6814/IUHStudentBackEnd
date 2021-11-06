@@ -104,31 +104,6 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(lops).build();
     }
 
-    @PreAuthorize("isAnonymous()")
-    public AccountResponse login(String username, String password) {
-        UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(username, password);
-        try {
-            SecurityContextHolder.getContext().setAuthentication(authenticationProvider.authenticate(credentials));
-            return AccountResponse
-                    .builder()
-                    .status(ResponseStatus.OK)
-                    .message("Đăng nhập thành công.")
-                    .data(accountService.getCurrentAccount())
-                    .build();
-        } catch (AuthenticationException ex) {
-            return AccountResponse
-                    .builder()
-                    .status(ResponseStatus.ERROR)
-                    .message("Đăng nhập không thành công.")
-                    .errors(new ArrayList<ErrorsResponse>() {
-                        {
-                            add(new ErrorsResponse("Tên tài khoản hoặc mật khẩu không đúng!"));
-                        }
-                    })
-                    .build();
-        }
-    }
-
     @PreAuthorize("isAuthenticated()")
     public SinhVienResponse getProfile() {
         Account account = accountService.getCurrentAccount();
