@@ -1,9 +1,7 @@
 package com.iuh.IUHStudent.resolvers;
 
-import com.iuh.IUHStudent.entity.Account;
-import com.iuh.IUHStudent.entity.KhoaVien;
-import com.iuh.IUHStudent.entity.Lop;
-import com.iuh.IUHStudent.entity.SinhVien;
+import com.iuh.IUHStudent.entity.*;
+import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
 import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.repository.SinhVienRepository;
@@ -13,6 +11,8 @@ import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
 import com.iuh.IUHStudent.service.AccountService;
+import com.iuh.IUHStudent.service.ChuyenNganhService;
+import com.iuh.IUHStudent.service.KhoaService;
 import com.iuh.IUHStudent.service.SinhVienService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,13 @@ public class QueryResolver implements GraphQLQueryResolver {
     private KhoaRepository khoaRepository;
 
     @Autowired
+    public KhoaService khoaService;
+
+    @Autowired
     private SinhVienRepository sinhVienRepository;
+
+    @Autowired
+    private ChuyenNganhRespository chuyenNganhRespository;
 
     @PreAuthorize("isAuthenticated()")
     public SinhViensResponse getSinhViens() {
@@ -56,7 +62,7 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @PreAuthorize("isAuthenticated()")
     public SinhVienResponse getSinhVienById(int sinhVienId) {
-        SinhVien sinhVien = sinhVienRepository.findById(sinhVienId).get();
+        SinhVien sinhVien = sinhVienService.findSinhVienById(sinhVienId);
         if (sinhVien != null) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.OK)
@@ -65,8 +71,12 @@ public class QueryResolver implements GraphQLQueryResolver {
         }
         return SinhVienResponse.builder()
                 .status(ResponseStatus.ERROR)
-                .message("Khong tim thay sinh vien")
-                .data(null)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Sinh viên"));
+                    }
+                })
                 .build();
     }
 
@@ -81,7 +91,7 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public KhoaResponse getKhoaById(int khoaVienId) {
-        KhoaVien khoa = khoaRepository.findById(khoaVienId).get();
+        KhoaVien khoa = khoaService.findKhoaById(khoaVienId);
         if (khoa != null) {
             return KhoaResponse.builder()
                     .status(ResponseStatus.OK)
@@ -90,11 +100,46 @@ public class QueryResolver implements GraphQLQueryResolver {
         }
         return KhoaResponse.builder()
                 .status(ResponseStatus.ERROR)
-                .message("Khong tim thay khoa")
-                .data(null)
+                .message("Xoa khong thanh công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Khoa"));
+                    }
+                })
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhsResponse getChuyenNganhs() {
+        List<ChuyenNganh> chuyenNganhs = chuyenNganhRespository.findAll();
+        return ChuyenNganhsResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(chuyenNganhs)
+                .build();
+    }
+
+    @Autowired
+    public ChuyenNganhService chuyenNganhService;
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhResponse getChuyenNganhById(int chuyenNganhId) {
+        ChuyenNganh chuyenNganh = chuyenNganhService.findChuyenNganhById(chuyenNganhId);
+        if (chuyenNganh != null) {
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(chuyenNganh)
+                    .build();
+        }
+        return ChuyenNganhResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Chuyênh ngành"));
+                    }
+                })
+                .build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
