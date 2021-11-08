@@ -1,16 +1,26 @@
 package com.iuh.IUHStudent.resolvers;
 
 import com.iuh.IUHStudent.entity.*;
+
 import com.iuh.IUHStudent.entityinput.ChuyenNganhInput;
+
+import com.iuh.IUHStudent.entityinput.HocKyInput;
+
 import com.iuh.IUHStudent.entityinput.KhoaInput;
+import com.iuh.IUHStudent.entityinput.MonHocInput;
 import com.iuh.IUHStudent.entityinput.SinhVienUpdateInput;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.*;
+
 import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
+
+import com.iuh.IUHStudent.repository.HocKyRepository;
+
 import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
+import com.iuh.IUHStudent.repository.MonHocRepository;
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
@@ -56,6 +66,18 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @Autowired
     private ChuyenNganhService chuyenNganhService;
+
+    @Autowired
+    private HocKyRepository hocKyRepository;
+
+    @Autowired
+    private HocKyService hocKyService;
+
+    @Autowired
+    private MonHocRepository monHocRepository;
+
+    @Autowired
+    private MonHocService monHocService;
 
     @PreAuthorize("isAnonymous()")
     public AccountResponse login(String username, String password) {
@@ -423,5 +445,150 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKyResponse createHocKy(HocKyInput inputs) {
+        HocKy hocKy = HocKy.builder()
+                .namBatDau(inputs.getNamBatDau())
+                .namKetThuc(inputs.getNamKetThuc())
+                .moTa(inputs.getMoTa())
+                .build();
+        try {
+            HocKy hocKyResp = hocKyRepository.save(hocKy);
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo Học Kỳ thành công")
+                    .data(hocKyResp)
+                    .build();
+        } catch (HocKyNotFoundException exception) {
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Tạo Học Kỳ không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Học Kỳ đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKyResponse updateHocKy(HocKyInput inputs, int hocKyId) {
+        HocKy hocKy = hocKyService.findKhoaById(hocKyId);
+        if (hocKy != null) {
+            hocKy.setNamBatDau(inputs.getNamBatDau());
+            hocKy.setNamKetThuc(inputs.getNamKetThuc());
+            hocKy.setMoTa(inputs.getMoTa());
+            hocKyRepository.save(hocKy);
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocKy)
+                    .message("update Học Kỳ thành công").build();
+        }
+        return HocKyResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Học Kỳ"));
+                    }
+                })
+                .message("update Học Kỳ không thành công").build();
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKyResponse deleteHocKy(int hocKyId) {
+        try {
+            hocKyService.deleteKhoa(hocKyId);
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa học kỳ thanh cong")
+                    .build();
+        } catch (HocKyNotFoundException e) {
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xóa không thành công")
+                    .errors(new ArrayList<>() {
+                        {
+                            add(new ErrorsResponse("Không tìm thấy học kỳ"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocResponse createMonHoc(MonHocInput inputs) {
+        MonHoc monHoc = MonHoc.builder()
+                .tenMonHoc(inputs.getTenMonHoc())
+                .moTa(inputs.getMoTa())
+                .build();
+        try {
+            MonHoc monHocReps = monHocRepository.save(monHoc);
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo Môn Học thành công")
+                    .data(monHocReps)
+                    .build();
+        } catch (MonHocNotFoundException exception) {
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo Môn Học không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Mon Học đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocResponse updateMonHoc(MonHocInput inputs, int monHocId) {
+        MonHoc monHoc = monHocService.findKhoaById(monHocId);
+        if (monHoc != null) {
+            monHoc.setTenMonHoc(inputs.getTenMonHoc());
+            monHoc.setMoTa(inputs.getMoTa());
+            monHocRepository.save(monHoc);
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHoc)
+                    .message("update Môn Học thành công").build();
+        }
+        return MonHocResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Môn Học"));
+                    }
+                })
+                .message("update Môn Học không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocResponse deleteMonHoc(int monHocId) {
+        try {
+            monHocService.deleteKhoa(monHocId);
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xóa môn học thành công")
+                    .build();
+        } catch (MonHocNotFoundException e) {
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xoa không thành công")
+                    .errors(new ArrayList<>() {
+                        {
+                            add(new ErrorsResponse("không tìm thấy Môn Học"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+
+
+
+
 
 }
