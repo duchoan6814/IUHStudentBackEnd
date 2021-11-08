@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @Builder
 @Table(name = "mon_hoc")
-public class MonHoc {
+public class MonHoc  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int monHocId;

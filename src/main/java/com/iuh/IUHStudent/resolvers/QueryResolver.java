@@ -5,6 +5,9 @@ import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
 import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.repository.SinhVienRepository;
+
+import com.iuh.IUHStudent.repository.*;
+
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
@@ -46,10 +49,17 @@ public class QueryResolver implements GraphQLQueryResolver {
     public KhoaService khoaService;
 
     @Autowired
+    private HocKyRepository hocKyRepository;
+
+    @Autowired
     private SinhVienRepository sinhVienRepository;
 
     @Autowired
     private ChuyenNganhRespository chuyenNganhRespository;
+
+    @Autowired
+    private MonHocRepository monHocRepository;
+
 
     @PreAuthorize("isAuthenticated()")
     public SinhViensResponse getSinhViens() {
@@ -141,6 +151,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .build();
     }
 
+
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
         List<Lop> lops = lopRepository.findAll();
@@ -170,4 +181,60 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(account.getSinhVien())
                 .build();
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKysResponse getHocKys() {
+        List<HocKy> hockys = hocKyRepository.findAll();
+        return HocKysResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(hockys)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKyResponse getHocKyById(int hocKyId) {
+        HocKy hocKy = hocKyRepository.findById(hocKyId).get();
+        if (hocKy != null) {
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocKy)
+                    .build();
+        }
+        return HocKyResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Không tìm thấy Học Kỳ")
+                .data(null)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocsResponse getMonHocs() {
+        List<MonHoc> monHocs = monHocRepository.findAll();
+        return MonHocsResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(monHocs)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocResponse getMonHocById(int monHocId) {
+        MonHoc monHoc = monHocRepository.findById(monHocId).get();
+        if (monHoc != null) {
+            return MonHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHoc)
+                    .build();
+        }
+        return MonHocResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("không tìm thấy Môn Học")
+                .data(null)
+                .build();
+    }
+
+
+
+
+
+
 }
