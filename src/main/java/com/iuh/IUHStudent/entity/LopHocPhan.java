@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class LopHocPhan {
+public class    LopHocPhan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int lopHocPhanId;

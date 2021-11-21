@@ -1,11 +1,13 @@
 package com.iuh.IUHStudent;
 
 import com.iuh.IUHStudent.entity.Account;
+import com.iuh.IUHStudent.entity.ChuyenNganh;
 import com.iuh.IUHStudent.entity.Lop;
 import com.iuh.IUHStudent.entity.SinhVien;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.repository.AccountRepository;
 import com.iuh.IUHStudent.service.AccountService;
+import com.iuh.IUHStudent.service.ChuyenNganhService;
 import com.iuh.IUHStudent.service.SinhVienService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
@@ -31,9 +35,10 @@ public class IuhStudentApplication {
     @Autowired
     private AccountRepository accountRepository;
 
-    public static void main(String[] args) {
-        SpringApplication.run(IuhStudentApplication.class, args);
-    }
+    @Autowired
+    private ChuyenNganhService chuyenNganhService;
+
+    public static void main(String[] args) {SpringApplication.run(IuhStudentApplication.class, args);}
 
     @Bean
     public Filter OpenFilter() {
@@ -42,6 +47,8 @@ public class IuhStudentApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
+//        List<ChuyenNganh> chuyenNganhs = new ArrayList<>();
+//        chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(3);
         AccountInput input = AccountInput.builder()
                 .userName("admin")
                 .password("admin")

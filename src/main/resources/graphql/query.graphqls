@@ -15,6 +15,7 @@ type Query {
     getHocKyById(hocKyId:ID!):HocKyResponse!
     getMonHocs: MonHocsResponse!
     getMonHocById(monHocId:ID!):MonHocResponse!
+    getChuyenNganhWithKhoaVienId(khoaVienId:ID!):ChuyenNganhsResponse!
 }
 
 
@@ -40,6 +41,7 @@ type Mutation {
     createMonHoc(inputs: MonHocInput!):MonHocResponse!
     updateMonHoc(inputs: MonHocInput!,maMonHoc:ID!):MonHocResponse!
     deleteMonHoc(monHocId: ID!):MonHocResponse!
+    addChuyenNganh(inputs:ChuyenNganhInputs!):ChuyenNganhResponse!
 
 }
 #================================================================
@@ -226,6 +228,16 @@ input ChuyenNganhInput {
 
 input ChuyenNganhInput {
     tenChuyenNganh: String!
+}
+
+input ChuyenNganhInputs {
+    tenChuyenNganh: String!
+    khoaVienId: ID!
+}
+
+input HocKyInput {
+    namBatDau:Int
+    namKetThuc:Int
 }
 
 #==========================================================================================
