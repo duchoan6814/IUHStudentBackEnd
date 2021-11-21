@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,26 @@ public class QueryResolver implements GraphQLQueryResolver {
                 })
                 .build();
     }
-
+    //Dang fix
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<ChuyenNganh> chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(khoaVienId);
+        if (chuyenNganhs.size() > 0) {
+            return ChuyenNganhsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(chuyenNganhs)
+                    .build();
+        }
+        return ChuyenNganhsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Chuyênh ngành thuộc khoa"));
+                    }
+                })
+                .build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
