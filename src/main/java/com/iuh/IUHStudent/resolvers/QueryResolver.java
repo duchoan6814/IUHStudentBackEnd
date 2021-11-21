@@ -172,29 +172,6 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .build();
     }
 
-    @Autowired
-    public ChuyenNganhService chuyenNganhService;
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ChuyenNganhResponse getChuyenNganhById(int chuyenNganhId) {
-        ChuyenNganh chuyenNganh = chuyenNganhService.findChuyenNganhById(chuyenNganhId);
-        if (chuyenNganh != null) {
-            return ChuyenNganhResponse.builder()
-                    .status(ResponseStatus.OK)
-                    .data(chuyenNganh)
-                    .build();
-        }
-        return ChuyenNganhResponse.builder()
-                .status(ResponseStatus.ERROR)
-                .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
-                    {
-                        add(new ErrorsResponse("Không tìm thấy Chuyênh ngành"));
-                    }
-                })
-                .build();
-    }
-
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
         List<Lop> lops = lopRepository.findAll();

@@ -414,21 +414,6 @@ public class MutationResolver implements GraphQLMutationResolver {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    public HocKyResponse createHocKy(HocKyInput inputs) {
-        HocKy hocKy = HocKy.builder()
-                .namBatDau(inputs.getNamBatDau())
-                .namKetThuc(inputs.getNamKetThuc())
-                .build();
-            HocKy chuyenNganhResp = hocKyRespository.save(hocKy);
-            return HocKyResponse.builder()
-                    .status(ResponseStatus.OK)
-                    .message("Tạo chuyên ngành thành công")
-                    .data(chuyenNganhResp)
-                    .build();
-
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
     public LopResponse createLop(String tenLop, String khoaHoc) {
         Lop lop = new Lop();
         lop.setTenLop(tenLop);
