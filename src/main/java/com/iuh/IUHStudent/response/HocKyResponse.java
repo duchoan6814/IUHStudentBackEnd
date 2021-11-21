@@ -6,6 +6,10 @@ import lombok.*;
 
 import java.util.List;
 
+import com.iuh.IUHStudent.entity.Lop;
+import lombok.*;
+
+import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

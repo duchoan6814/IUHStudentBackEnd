@@ -10,6 +10,7 @@ import com.iuh.IUHStudent.entityinput.HocKyInput;
 import com.iuh.IUHStudent.entityinput.KhoaInput;
 import com.iuh.IUHStudent.entityinput.MonHocInput;
 import com.iuh.IUHStudent.entityinput.SinhVienUpdateInput;
+import com.iuh.IUHStudent.entityinput.*;
 import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
@@ -20,6 +21,7 @@ import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
 
 import com.iuh.IUHStudent.repository.HocKyRepository;
 
+import com.iuh.IUHStudent.repository.HocKyRespository;
 import com.iuh.IUHStudent.repository.KhoaRepository;
 import com.iuh.IUHStudent.repository.LopRepository;
 import com.iuh.IUHStudent.repository.MonHocRepository;
@@ -261,10 +263,12 @@ public class MutationResolver implements GraphQLMutationResolver {
             sinhVien.setTonGiao(inputs.getTonGiao());
             sinhVienService.saveSinhVien(sinhVien);
             return UpdateSVResponse.builder()
+                    .status(ResponseStatus.OK)
                     .data(sinhVien)
                     .message("update sinh viên thành công").build();
         }
         return UpdateSVResponse.builder()
+                .status(ResponseStatus.ERROR)
                 .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy sinh viên"));
@@ -381,6 +385,47 @@ public class MutationResolver implements GraphQLMutationResolver {
                     })
                     .build();
         }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ChuyenNganhResponse addChuyenNganh(ChuyenNganhInputs inputs) {
+        ChuyenNganh chuyenNganh = ChuyenNganh.builder()
+                .tenChuyenNganh(inputs.getTenChuyenNganh())
+                .khoaVien(khoaRepository.getById(inputs.getKhoaVienId()))
+                .build();
+        try {
+            ChuyenNganh chuyenNganhResp = chuyenNganhResponse.save(chuyenNganh);
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo chuyên ngành thành công")
+                    .data(chuyenNganhResp)
+                    .build();
+        } catch (ChuyenNganhNotFoundException exception) {
+            return ChuyenNganhResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Tạo chuyên ngành không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Chuyên ngành đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocKyResponse createHocKy(HocKyInput inputs) {
+        HocKy hocKy = HocKy.builder()
+                .namBatDau(inputs.getNamBatDau())
+                .namKetThuc(inputs.getNamKetThuc())
+                .build();
+            HocKy chuyenNganhResp = hocKyRespository.save(hocKy);
+            return HocKyResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo chuyên ngành thành công")
+                    .data(chuyenNganhResp)
+                    .build();
+
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -587,10 +632,4 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
-
-
-
-
-
-
 }

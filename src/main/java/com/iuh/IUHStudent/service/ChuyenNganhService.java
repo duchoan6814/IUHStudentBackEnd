@@ -6,6 +6,7 @@ import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,4 +30,9 @@ public class ChuyenNganhService {
         chuyenNganhRespository.deleteById(chuyenNganhId);
         return true;
     }
+    public List<ChuyenNganh> getChuyenNganhByKhoaVienId(int khoaVienId) {
+        List<ChuyenNganh> chuyenNganhs = (List<ChuyenNganh>) chuyenNganhRespository.findAllActiveUsers(khoaVienId);
+        return chuyenNganhs;
+    }
+
 }
