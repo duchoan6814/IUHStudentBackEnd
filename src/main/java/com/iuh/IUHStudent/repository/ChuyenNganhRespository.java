@@ -11,5 +11,5 @@ public interface ChuyenNganhRespository extends JpaRepository<ChuyenNganh,Intege
     public List<ChuyenNganh> findChuyenNganhsByKhoaVien(KhoaInput khoaVien);
 
     @Query("SELECT c.chuyenNganhId,c.tenChuyenNganh FROM ChuyenNganh c JOIN KhoaVien k on c.khoaVien.khoaVienId = k.khoaVienId WHERE k.khoaVienId = ?1")
-    List<ChuyenNganh> findAllActiveUsers(int khoaVienId);
+    List<Object[]> findAllActiveUsers(int khoaVienId);
 }

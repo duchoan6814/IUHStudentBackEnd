@@ -153,7 +153,7 @@ public class QueryResolver implements GraphQLQueryResolver {
     }
     //Dang fix
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) {
+    public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
         List<ChuyenNganh> chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(khoaVienId);
         if (chuyenNganhs != null) {
             return ChuyenNganhsResponse.builder()
