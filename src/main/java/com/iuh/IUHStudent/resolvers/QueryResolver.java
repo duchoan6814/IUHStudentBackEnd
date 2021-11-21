@@ -155,7 +155,7 @@ public class QueryResolver implements GraphQLQueryResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
         List<ChuyenNganh> chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(khoaVienId);
-        if (chuyenNganhs != null) {
+        if (chuyenNganhs.size() > 0) {
             return ChuyenNganhsResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(chuyenNganhs)
