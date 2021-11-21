@@ -2,7 +2,6 @@ scalar Date
 scalar Boolean
 #selet
 type Query {
-    login(username: String!, password: String!): AccountResponse!
     getLops: LopsResponse!
 #    getLopById(lopId:ID!):LopResponse!
     getSinhViens: SinhViensResponse!
@@ -12,6 +11,10 @@ type Query {
     getProfile: SinhVienResponse!
     getChuyenNganhs: ChuyenNganhsResponse!
     getChuyenNganhById(chuyenNganhId: ID!):ChuyenNganhResponse!
+    getHocKys: HocKysResponse!
+    getHocKyById(hocKyId:ID!):HocKyResponse!
+    getMonHocs: MonHocsResponse!
+    getMonHocById(monHocId:ID!):MonHocResponse!
 }
 
 
@@ -27,12 +30,18 @@ type Mutation {
     createKhoa(inputs: KhoaInput!):KhoaResponse!
     updateKhoa(inputs: KhoaInput!,maKhoa:ID!):KhoaResponse!
     deleteKhoa(khoaId: ID!):KhoaResponse!
+    login(username: String!, password: String!): AccountResponse!
     createChuyenNganh(inputs: ChuyenNganhInput!):ChuyenNganhResponse!
     updateChuyenNganh(inputs: ChuyenNganhInput!,chuyenNganhId:ID!):ChuyenNganhResponse!
     deleteChuyenNganh(chuyenNganhId:ID!):ChuyenNganhResponse!
+    createHocKy(inputs: HocKyInput!):HocKyResponse!
+    updateHocKy(inputs: HocKyInput!,maHocKy:ID!):HocKyResponse!
+    deleteHocKy(hocKyId: ID!):HocKyResponse!
+    createMonHoc(inputs: MonHocInput!):MonHocResponse!
+    updateMonHoc(inputs: MonHocInput!,maMonHoc:ID!):MonHocResponse!
+    deleteMonHoc(monHocId: ID!):MonHocResponse!
 
 }
-
 #================================================================
 
 interface ResponseInterface {
@@ -123,6 +132,19 @@ type ChuyenNganh {
     chuyenNganhId: ID
     tenChuyenNganh: String
 }
+
+type HocKy{
+    hocKyId: ID
+    namBatDau: ID
+    namKetThuc: ID
+    moTa: String
+}
+
+type MonHoc{
+    monHocId:ID
+    tenMonHoc:String
+    moTa: String
+}
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -186,6 +208,20 @@ input SinhVienUpdateInput{
 input KhoaInput {
      tenKhoaVien:String
      lienKet:String
+}
+input HocKyInput {
+    namBatDau: ID
+    namKetThuc: ID
+    moTa: String
+}
+
+input MonHocInput {
+    tenMonHoc:String
+    moTa: String
+}
+
+input ChuyenNganhInput {
+    tenChuyenNganh: String!
 }
 
 input ChuyenNganhInput {
@@ -270,3 +306,30 @@ type ChuyenNganhsResponse implements ResponseInterface {
     errors: [ErrorsResponse]
     data:[ChuyenNganh]
 }
+
+type HocKyResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:HocKy
+}
+type HocKysResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[HocKy]
+}
+
+type MonHocResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:MonHoc
+}
+type MonHocsResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[MonHoc]
+}
+
