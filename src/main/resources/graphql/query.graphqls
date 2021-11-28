@@ -16,6 +16,9 @@ type Query {
     getMonHocs: MonHocsResponse!
     getMonHocById(monHocId:ID!):MonHocResponse!
     getChuyenNganhWithKhoaVienId(khoaVienId:ID!):ChuyenNganhsResponse!
+    getSinhVienWithKhoaVienId(khoaVienId:ID!):SinhViensResponse!
+    getSinhVienWithKhoaVienIdAndNgayVaoTruong(khoaVienId:ID!,ngayVaoTruong: String!):SinhViensResponse!
+
 }
 
 
@@ -211,20 +214,12 @@ input KhoaInput {
      tenKhoaVien:String
      lienKet:String
 }
-input HocKyInput {
-    namBatDau: ID
-    namKetThuc: ID
-    moTa: String
-}
 
 input MonHocInput {
     tenMonHoc:String
     moTa: String
 }
 
-input ChuyenNganhInput {
-    tenChuyenNganh: String!
-}
 
 input ChuyenNganhInput {
     tenChuyenNganh: String!
@@ -344,4 +339,6 @@ type MonHocsResponse implements ResponseInterface {
     errors: [ErrorsResponse]
     data:[MonHoc]
 }
+
+
 
