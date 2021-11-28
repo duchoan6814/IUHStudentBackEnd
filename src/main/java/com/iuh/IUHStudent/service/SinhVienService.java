@@ -10,4 +10,6 @@ public interface SinhVienService {
     boolean deleteSinhVien(int sinhVienId);
     SinhVien findSinhVienById(int sinhVienId);
     SinhVien findSinhVienByMa(String maSinhVien);
+    List<SinhVien> finSinhVienByKhoaVienId(int khoaVienId);
+    List<SinhVien> finSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong);
 }

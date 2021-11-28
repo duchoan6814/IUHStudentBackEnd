@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.iuh.IUHStudent.util.StreamUtils.collectionStream;
@@ -174,5 +171,22 @@ public class AccountService implements UserDetailsService {
                         .collect(Collectors.toList()))
                 .token(token)
                 .build();
+    }
+
+    public Account findAccountBySinhVienId(int sinhVienId) {
+        List<Object[]> _result = accountRepository.findAccountBySinhVienId(sinhVienId);
+        String _userName = null;
+        if(_result.size() <= 0) {
+            return null;
+        }
+
+        _userName = (String) _result.get(0)[0];
+        Account _account = accountRepository.findByUsername(_userName).get();
+
+        return _account;
+    }
+
+    public void deleteAccount(Account account) {
+        accountRepository.delete(account);
     }
 }

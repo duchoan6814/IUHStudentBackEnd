@@ -37,7 +37,6 @@ public class ChuyenNganhService {
         List<ChuyenNganh> _chuyenNganhs = new ArrayList<>();
         for (Object[] obj :
                 chuyenNganhs) {
-            System.out.println("test " + obj.toString());
            ChuyenNganh _chuyenNganh = new ChuyenNganh();
            _chuyenNganh.setChuyenNganhId((Integer) obj[0]);
            _chuyenNganh.setTenChuyenNganh((String) obj[1]);

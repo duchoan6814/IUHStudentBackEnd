@@ -146,12 +146,30 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .message("Tìm không thành công")
                 .errors(new ArrayList<>(){
                     {
-                        add(new ErrorsResponse("Không tìm thấy Chuyênh ngành"));
+                        add(new ErrorsResponse("Không tìm thấy Chuyên ngành"));
                     }
                 })
                 .build();
     }
-    //Dang fix
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public SinhViensResponse getSinhVienWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<SinhVien> sinhViens = sinhVienService.finSinhVienByKhoaVienId(khoaVienId);
+        if (sinhViens.size() > 0) {
+            return SinhViensResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(sinhViens)
+                    .build();
+        }
+        return SinhViensResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên thuộc khoa"));
+                    }
+                })
+                .build();
+    }
     @PreAuthorize("hasAuthority('ADMIN')")
     public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
         List<ChuyenNganh> chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(khoaVienId);
@@ -167,6 +185,26 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .errors(new ArrayList<>(){
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Chuyênh ngành thuộc khoa"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public SinhViensResponse getSinhVienWithKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong) throws NoSuchFieldException, IllegalAccessException {
+        List<SinhVien> sinhViens = sinhVienService.finSinhVienByKhoaVienIdAndNgayVaoTruong(khoaVienId,ngayVaoTruong);
+        if (sinhViens.size() > 0) {
+            return SinhViensResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(sinhViens)
+                    .build();
+        }
+        return SinhViensResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên"));
                     }
                 })
                 .build();
@@ -251,10 +289,4 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(null)
                 .build();
     }
-
-
-
-
-
-
 }
