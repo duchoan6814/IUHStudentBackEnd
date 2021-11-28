@@ -20,7 +20,7 @@ public class Account {
     private String username;
     private String password;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "acount_id"))
     private Set<String> roles;
 

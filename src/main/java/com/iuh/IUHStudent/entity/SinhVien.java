@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -39,13 +38,40 @@ public class SinhVien {
     private String email;
     private TonGiao tonGiao;
 
-    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SinhVienLopHocPhan> lopHocPhans;
+
+    @OneToOne(mappedBy = "sinhVien")
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "lop_fk")
     private Lop lop;
 
-
-
+    @Override
+    public String toString() {
+        return "SinhVien{" +
+                "sinhVienId=" + sinhVienId +
+                ", maSinhVien='" + maSinhVien + '\'' +
+                ", maHoSo='" + maHoSo + '\'' +
+                ", image='" + image + '\'' +
+                ", hoTenDem='" + hoTenDem + '\'' +
+                ", ten='" + ten + '\'' +
+                ", gioiTinh=" + gioiTinh +
+                ", bacDaoTao=" + bacDaoTao +
+                ", trangThai=" + trangThai +
+                ", loaiHinhDaoTao=" + loaiHinhDaoTao +
+                ", ngayVaoTruong=" + ngayVaoTruong +
+                ", ngaySinh=" + ngaySinh +
+                ", ngayVaoDoan=" + ngayVaoDoan +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", noiSinh='" + noiSinh + '\'' +
+                ", hoKhauThuongTru='" + hoKhauThuongTru + '\'' +
+                ", danToc=" + danToc +
+                ", ngayVaoDang=" + ngayVaoDang +
+                ", email='" + email + '\'' +
+                ", tonGiao=" + tonGiao +
+                '}';
+    }
 }
