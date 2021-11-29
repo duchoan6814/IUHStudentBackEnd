@@ -6,8 +6,8 @@ import com.iuh.IUHStudent.repository.SinhVienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 @Service
 public class SinhVienServiceImpl implements SinhVienService {
@@ -68,7 +68,7 @@ public class SinhVienServiceImpl implements SinhVienService {
     }
 
     @Override
-    public List<SinhVien> finSinhVienByKhoaVienId(int khoaVienId) {
+    public List<SinhVien> findSinhVienByKhoaVienId(int khoaVienId) {
         List<Object[]> sinhViens = sinhVienRepository.getSinhVienWithKhoaVienId(khoaVienId);
         List<SinhVien> sinhViens1 = new ArrayList<>();
         for (Object[] obj :
@@ -103,7 +103,7 @@ public class SinhVienServiceImpl implements SinhVienService {
     }
 
     @Override
-    public List<SinhVien> finSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong) {
+    public List<SinhVien> findSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong) {
         List<Object[]> sinhViens = sinhVienRepository.getSinhVienWithKhoaVienIdAndNgayVaoTruong(khoaVienId,ngayVaoTruong);
         List<SinhVien> sinhViens1 = new ArrayList<>();
         for (Object[] obj :
@@ -138,17 +138,13 @@ public class SinhVienServiceImpl implements SinhVienService {
     }
 
     @Override
-    public List<NamHoc> finNamHocByKhoaVienId(int khoaVienId) {
-        List<Object[]> sinhViens = sinhVienRepository.getNamHocWithKhoaVienId(khoaVienId);
+    public List<NamHoc> findNamHocByKhoaVienId(int khoaVienId){
+        List<String> sinhViens = sinhVienRepository.getNamHocWithKhoaVienId(khoaVienId);
         List<NamHoc> namHocs = new ArrayList<>();
-        for (Object[] obj :
+        for (String obj :
                 sinhViens) {
             NamHoc namHoc = new NamHoc();
-            String pattern = "yyyy";
-            SimpleDateFormat simpleDateFormat =new SimpleDateFormat(pattern);
-            String date = simpleDateFormat.format(obj[0]);
-            namHoc.setNamHoc(date);
-
+            namHoc.setNamHoc(obj);
             namHocs.add(namHoc);
         }
         return namHocs;

@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.text.ParseException;
@@ -154,7 +155,7 @@ public class QueryResolver implements GraphQLQueryResolver {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhViensResponse getSinhVienWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
-        List<SinhVien> sinhViens = sinhVienService.finSinhVienByKhoaVienId(khoaVienId);
+        List<SinhVien> sinhViens = sinhVienService.findSinhVienByKhoaVienId(khoaVienId);
         if (sinhViens.size() > 0) {
             return SinhViensResponse.builder()
                     .status(ResponseStatus.OK)
@@ -171,6 +172,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 })
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public ChuyenNganhsResponse getChuyenNganhWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
         List<ChuyenNganh> chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(khoaVienId);
@@ -193,7 +195,7 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhViensResponse getSinhVienWithKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong) throws NoSuchFieldException, IllegalAccessException {
-        List<SinhVien> sinhViens = sinhVienService.finSinhVienByKhoaVienIdAndNgayVaoTruong(khoaVienId,ngayVaoTruong);
+        List<SinhVien> sinhViens = sinhVienService.findSinhVienByKhoaVienIdAndNgayVaoTruong(khoaVienId,ngayVaoTruong);
         if (sinhViens.size() > 0) {
             return SinhViensResponse.builder()
                     .status(ResponseStatus.OK)
@@ -211,9 +213,11 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .build();
     }
 
+
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public NamHocsResponse getNamHocWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException, ParseException {
-        List<NamHoc> namHocs = sinhVienService.finNamHocByKhoaVienId(khoaVienId);
+        List<NamHoc> namHocs = sinhVienService.findNamHocByKhoaVienId(khoaVienId);
         if (namHocs.size() > 0) {
             return NamHocsResponse.builder()
                     .status(ResponseStatus.OK)
