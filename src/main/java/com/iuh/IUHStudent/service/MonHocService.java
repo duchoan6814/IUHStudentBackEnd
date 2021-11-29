@@ -57,5 +57,22 @@ public class MonHocService {
         return _monHocs;
     }
 
+    public List<MonHoc> getMonHocWithChuyenNganh(int chuyenNganhId) {
+        List<Object[]> monHocs =  monHocRepository.getMonHocWithChuyenNganhID(chuyenNganhId);
+        List<MonHoc> _monHocs = new ArrayList<>();
+        for (Object[] obj :
+                monHocs) {
+            System.out.println("test " + obj.toString());
+            MonHoc _monHoc = new MonHoc();
+            _monHoc.setMonHocId((Integer) obj[0]);
+            _monHoc.setTenMonHoc((String) obj[1]);
+            _monHoc.setMoTa((String) obj[2]);
+
+            _monHocs.add(_monHoc);
+        }
+
+
+        return _monHocs;
+    }
 
 }

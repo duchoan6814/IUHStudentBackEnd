@@ -267,7 +267,7 @@ public class QueryResolver implements GraphQLQueryResolver {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocsResponse getMonHocWithChuyenNganhId(int chuyenNganhId) throws NoSuchFieldException, IllegalAccessException {
-        List<MonHoc> monHocs = monHocService.getChuyenNganhWithKhoaVienId(chuyenNganhId);
+        List<MonHoc> monHocs = monHocService.getMonHocWithChuyenNganh(chuyenNganhId);
         if (monHocs.size() > 0) {
             return MonHocsResponse.builder()
                     .status(ResponseStatus.OK)
