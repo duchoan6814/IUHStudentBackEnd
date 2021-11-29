@@ -754,19 +754,40 @@ public class MutationResolver implements GraphQLMutationResolver {
                 .message("Cập nhật Môn Học không thành công").build();
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public MonHocResponse deleteMonHoc(int monHocId) {
+//        try {
+//            monHocService.deleteMonHoc(monHocId);
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.OK)
+//                    .message("Xóa môn học thành công")
+//                    .build();
+//        } catch (MonHocNotFoundException e) {
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.ERROR)
+//                    .message("Xóa không thành công")
+//                    .errors(new ArrayList<>() {
+//                        {
+//                            add(new ErrorsResponse("không tìm thấy Môn Học"));
+//                        }
+//                    })
+//                    .build();
+//        }
+//    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse deleteMonHoc(int monHocId) {
         try {
             monHocService.deleteMonHoc(monHocId);
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xóa môn học thành công")
+                    .message("Xoa Môn Học thành công")
                     .build();
-        } catch (MonHocNotFoundException e) {
+        }catch (MonHocNotFoundException e) {
             return MonHocResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Xóa không thành công")
-                    .errors(new ArrayList<>() {
+                    .errors(new ArrayList<>(){
                         {
                             add(new ErrorsResponse("Không tìm thấy Môn Học"));
                         }
