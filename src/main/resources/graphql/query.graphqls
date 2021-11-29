@@ -18,6 +18,7 @@ type Query {
     getChuyenNganhWithKhoaVienId(khoaVienId:ID!):ChuyenNganhsResponse!
     getSinhVienWithKhoaVienId(khoaVienId:ID!):SinhViensResponse!
     getSinhVienWithKhoaVienIdAndNgayVaoTruong(khoaVienId:ID!,ngayVaoTruong: String!):SinhViensResponse!
+    getNamHocWithKhoaVienId(khoaVienId:ID!):NamHocsResponse!
 
 }
 
@@ -149,6 +150,10 @@ type MonHoc{
     monHocId:ID
     tenMonHoc:String
     moTa: String
+}
+
+type NamHoc {
+    namHoc:String
 }
 #==========================================================================================
 input RegisterAccountInput {
@@ -338,6 +343,13 @@ type MonHocsResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:[MonHoc]
+}
+
+type NamHocsResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[NamHoc]
 }
 
 

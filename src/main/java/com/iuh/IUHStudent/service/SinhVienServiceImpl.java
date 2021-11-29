@@ -6,10 +6,8 @@ import com.iuh.IUHStudent.repository.SinhVienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class SinhVienServiceImpl implements SinhVienService {
@@ -137,5 +135,22 @@ public class SinhVienServiceImpl implements SinhVienService {
             sinhViens1.add(sinhVien);
         }
         return sinhViens1;
+    }
+
+    @Override
+    public List<NamHoc> finNamHocByKhoaVienId(int khoaVienId) {
+        List<Object[]> sinhViens = sinhVienRepository.getNamHocWithKhoaVienId(khoaVienId);
+        List<NamHoc> namHocs = new ArrayList<>();
+        for (Object[] obj :
+                sinhViens) {
+            NamHoc namHoc = new NamHoc();
+            String pattern = "yyyy";
+            SimpleDateFormat simpleDateFormat =new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(obj[0]);
+            namHoc.setNamHoc(date);
+
+            namHocs.add(namHoc);
+        }
+        return namHocs;
     }
 }
