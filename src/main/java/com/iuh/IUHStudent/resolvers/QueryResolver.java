@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,6 +206,26 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .errors(new ArrayList<>(){
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocsResponse getNamHocWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException, ParseException {
+        List<NamHoc> namHocs = sinhVienService.finNamHocByKhoaVienId(khoaVienId);
+        if (namHocs.size() > 0) {
+            return NamHocsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(namHocs)
+                    .build();
+        }
+        return NamHocsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách năm học"));
                     }
                 })
                 .build();
