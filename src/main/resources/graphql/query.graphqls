@@ -15,6 +15,7 @@ type Query {
     getHocKyById(hocKyId:ID!):HocKyResponse!
     getMonHocs: MonHocsResponse!
     getMonHocById(monHocId:ID!):MonHocResponse!
+    getMonHocWithName(tenMonHoc:String!):MonHocsResponse!
     getChuyenNganhWithKhoaVienId(khoaVienId:ID!):ChuyenNganhsResponse!
     getSinhVienWithKhoaVienId(khoaVienId:ID!):SinhViensResponse!
     getSinhVienWithKhoaVienIdAndNgayVaoTruong(khoaVienId:ID!,ngayVaoTruong: String!):SinhViensResponse!
@@ -23,6 +24,7 @@ type Query {
     getLopHocPhanById(lopHocPhanId: ID!): LopHocPhanReponse!
     getHocPhans:HocPhansResponse!
     getHocPhanById(hocPhanId: ID!): HocPhanResponse!
+    getMonHocWithChuyenNganhId(chuyenNganhId:ID!):MonHocsResponse!
 }
 
 
@@ -58,8 +60,8 @@ type Mutation {
 
 
 }
+#    addMonHoc(inputs:MonHocInputs!):MonHocResponse!
 
-}
 #================================================================
 
 interface ResponseInterface {
@@ -271,6 +273,11 @@ input ChuyenNganhInput {
 input ChuyenNganhInputs {
     tenChuyenNganh: String!
     khoaVienId: ID!
+}
+input MonHocInputs {
+    tenMonHoc:String!
+    moTa: String
+    chuyenNganhId: Int!
 }
 
 input HocKyInput {

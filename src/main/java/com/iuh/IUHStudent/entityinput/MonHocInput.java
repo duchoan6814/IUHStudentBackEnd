@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 public class MonHocInput {
     private int monHocId;
-
     private String tenMonHoc;
     private String moTa;
 
