@@ -29,4 +29,6 @@ public class MonHoc  {
     @JoinColumn(name = "monHoc_fk",referencedColumnName = "monHocId")
     private Set<HocPhan> hocPhans;
 
+
+
 }

@@ -13,10 +13,7 @@ import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
-import com.iuh.IUHStudent.service.AccountService;
-import com.iuh.IUHStudent.service.ChuyenNganhService;
-import com.iuh.IUHStudent.service.KhoaService;
-import com.iuh.IUHStudent.service.SinhVienService;
+import com.iuh.IUHStudent.service.*;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,6 +57,9 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     private MonHocRepository monHocRepository;
+
+    @Autowired
+    private MonHocService monHocService;
 
 
     @PreAuthorize("isAuthenticated()")
@@ -171,6 +171,45 @@ public class QueryResolver implements GraphQLQueryResolver {
                 })
                 .build();
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocsResponse getMonHocWithName(String tenMonHoc) throws NoSuchFieldException, IllegalAccessException {
+        List<MonHoc> monHocs = monHocService.getMonHocWithName(tenMonHoc);
+        if (monHocs.size() > 0) {
+            return MonHocsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHocs)
+                    .build();
+        }
+        return MonHocsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
+                    }
+                })
+                .build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocsResponse getMonHocWithChuyenNganhId(int chuyenNganhId) throws NoSuchFieldException, IllegalAccessException {
+        List<MonHoc> monHocs = monHocService.getChuyenNganhWithKhoaVienId(chuyenNganhId);
+        if (monHocs.size() > 0) {
+            return MonHocsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHocs)
+                    .build();
+        }
+        return MonHocsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
+                    }
+                })
+                .build();
+    }
+
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {

@@ -66,6 +66,9 @@ public class MutationResolver implements GraphQLMutationResolver {
     private KhoaService khoaService;
 
     @Autowired
+    private ChuyenNganhRespository chuyenNganhRespository;
+
+    @Autowired
     private ChuyenNganhRespository chuyenNganhResponse;
 
     @Autowired
@@ -412,6 +415,33 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public MonHocResponse addMonHoc(MonHocInputs inputs) {
+//        MonHoc monHoc = MonHoc.builder()
+//                .tenMonHoc(inputs.getTenMonHoc())
+//                .moTa(inputs.getMoTa())
+//                .chuyenNganh(chuyenNganhRespository.getById(inputs.getChuyenNganhId()))
+//                .build();
+//        try {
+//            ChuyenNganh chuyenNganhResp = chuyenNganhResponse.save(chuyenNganh);
+//            return ChuyenNganhResponse.builder()
+//                    .status(ResponseStatus.OK)
+//                    .message("Tạo chuyên ngành thành công")
+//                    .data(chuyenNganhResp)
+//                    .build();
+//        } catch (ChuyenNganhNotFoundException exception) {
+//            return ChuyenNganhResponse.builder()
+//                    .status(ResponseStatus.ERROR)
+//                    .message("Tạo chuyên ngành không thành công!")
+//                    .errors(new ArrayList<ErrorsResponse>() {
+//                        {
+//                            add(new ErrorsResponse("Chuyên ngành đã tồn tại!"));
+//                        }
+//                    })
+//                    .build();
+//        }
+//    }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public LopResponse createLop(String tenLop, String khoaHoc) {
@@ -472,7 +502,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .status(ResponseStatus.OK)
                     .message("Đổi mật khẩu không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {{
-                        add(ErrorsResponse.builder().message("Token khong dung!").build());
+                        add(ErrorsResponse.builder().message("Token không đúng!").build());
                     }})
                     .build();
         }
@@ -506,7 +536,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse updateHocKy(HocKyInput inputs, int hocKyId) {
-        HocKy hocKy = hocKyService.findKhoaById(hocKyId);
+        HocKy hocKy = hocKyService.findHcoKyById(hocKyId);
         if (hocKy != null) {
             hocKy.setNamBatDau(inputs.getNamBatDau());
             hocKy.setNamKetThuc(inputs.getNamKetThuc());
@@ -531,10 +561,10 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse deleteHocKy(int hocKyId) {
         try {
-            hocKyService.deleteKhoa(hocKyId);
+            hocKyService.deleteHocKy(hocKyId);
             return HocKyResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xoa học kỳ thanh cong")
+                    .message("Xoa học kỳ thành công")
                     .build();
         } catch (HocKyNotFoundException e) {
             return HocKyResponse.builder()
@@ -577,7 +607,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse updateMonHoc(MonHocInput inputs, int monHocId) {
-        MonHoc monHoc = monHocService.findKhoaById(monHocId);
+        MonHoc monHoc = monHocService.findMonHocById(monHocId);
         if (monHoc != null) {
             monHoc.setTenMonHoc(inputs.getTenMonHoc());
             monHoc.setMoTa(inputs.getMoTa());
@@ -600,7 +630,7 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse deleteMonHoc(int monHocId) {
         try {
-            monHocService.deleteKhoa(monHocId);
+            monHocService.deleteMonHoc(monHocId);
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
                     .message("Xóa môn học thành công")
@@ -608,7 +638,7 @@ public class MutationResolver implements GraphQLMutationResolver {
         } catch (MonHocNotFoundException e) {
             return MonHocResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Xoa không thành công")
+                    .message("Xóa không thành công")
                     .errors(new ArrayList<>() {
                         {
                             add(new ErrorsResponse("không tìm thấy Môn Học"));
