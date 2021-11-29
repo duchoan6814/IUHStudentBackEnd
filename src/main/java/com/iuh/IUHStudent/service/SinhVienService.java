@@ -3,6 +3,7 @@ package com.iuh.IUHStudent.service;
 import com.iuh.IUHStudent.entity.NamHoc;
 import com.iuh.IUHStudent.entity.SinhVien;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface SinhVienService {
@@ -11,7 +12,7 @@ public interface SinhVienService {
     boolean deleteSinhVien(int sinhVienId);
     SinhVien findSinhVienById(int sinhVienId);
     SinhVien findSinhVienByMa(String maSinhVien);
-    List<SinhVien> finSinhVienByKhoaVienId(int khoaVienId);
-    List<SinhVien> finSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong);
-    List<NamHoc> finNamHocByKhoaVienId(int khoaVienId);
+    List<SinhVien> findSinhVienByKhoaVienId(int khoaVienId);
+    List<SinhVien> findSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong);
+    List<NamHoc> findNamHocByKhoaVienId(int khoaVienId) throws ParseException;
 }
