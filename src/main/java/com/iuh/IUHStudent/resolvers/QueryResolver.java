@@ -113,7 +113,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         }
         return KhoaResponse.builder()
                 .status(ResponseStatus.ERROR)
-                .message("Xoa khong thanh công")
+                .message("Xóa không thành công")
                 .errors(new ArrayList<>(){
                     {
                         add(new ErrorsResponse("Không tìm thấy Khoa"));
@@ -167,7 +167,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .message("Tìm không thành công")
                 .errors(new ArrayList<>(){
                     {
-                        add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên thuộc khoa"));
+                        add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên"));
                     }
                 })
                 .build();
@@ -187,7 +187,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .message("Tìm không thành công")
                 .errors(new ArrayList<>(){
                     {
-                        add(new ErrorsResponse("Không tìm thấy danh sách Chuyênh ngành thuộc khoa"));
+                        add(new ErrorsResponse("Không tìm thấy danh sách Chuyênh ngành"));
                     }
                 })
                 .build();
@@ -249,7 +249,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         if (account == null) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Lay thong tin sinh vien khong thanh cong!")
+                    .message("Lấy thông tin sinh viên không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {
                         {
                             add(new ErrorsResponse("Xảy ra lỗi trong quá trình get user"));
@@ -260,7 +260,7 @@ public class QueryResolver implements GraphQLQueryResolver {
 
         return SinhVienResponse.builder()
                 .status(ResponseStatus.OK)
-                .message("Lay thong tin sinh vien thanh cong!")
+                .message("Lấy thông tin sinh viên thành công!")
                 .data(account.getSinhVien())
                 .build();
     }
