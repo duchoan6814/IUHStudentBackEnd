@@ -19,7 +19,10 @@ type Query {
     getSinhVienWithKhoaVienId(khoaVienId:ID!):SinhViensResponse!
     getSinhVienWithKhoaVienIdAndNgayVaoTruong(khoaVienId:ID!,ngayVaoTruong: String!):SinhViensResponse!
     getNamHocWithKhoaVienId(khoaVienId:ID!):NamHocsResponse!
-
+    getLopHocPhans: LopHocPhansResponse!
+    getLopHocPhanById(lopHocPhanId: ID!): LopHocPhanReponse!
+    getHocPhans:HocPhansResponse!
+    getHocPhanById(hocPhanId: ID!): HocPhanResponse!
 }
 
 
@@ -46,6 +49,15 @@ type Mutation {
     updateMonHoc(inputs: MonHocInput!,maMonHoc:ID!):MonHocResponse!
     deleteMonHoc(monHocId: ID!):MonHocResponse!
     addChuyenNganh(inputs:ChuyenNganhInputs!):ChuyenNganhResponse!
+    createLopHocPhan(inputs: LopHocPhanInput!):LopHocPhanReponse!
+    deleteLopHocPhan(lopHocPhanId: ID!): LopHocPhanReponse!
+    updateLopHocPhan(inputs: LopHocPhanInput!,lopHocPhanId: ID!):LopHocPhanReponse!
+    createHocPhan(inputs: HocPhanInput!): HocPhanResponse!
+    updateHocPhan(inputs: HocPhanInput!,hocPhanId: ID!):HocPhanResponse!
+    deleteHocPhan(hocPhanId: ID!): HocPhanResponse!
+
+
+}
 
 }
 #================================================================
@@ -90,6 +102,13 @@ enum DanToc {
 enum LoaiHinhDaoTao {
     TIEN_TIEN
     DAI_TRA
+}
+enum TrangThaiLopHocPhan{
+    DANG_LEN_KE_HOACH
+    CHO_SINH_VIEN_DANG_KY
+    CHAP_NHAN_MO_LOP
+    HUY_LOP_HOC_PHAN
+    DA_KHOA
 }
 #========================================================================
 
@@ -154,6 +173,25 @@ type MonHoc{
 
 type NamHoc {
     namHoc:String
+}
+
+type LopHocPhan{
+    lopHocPhanId: ID
+    maLopHocPhan: String
+    tenVietTat: String
+    tenLopHocPhan: String
+    soNhomThucHanh: ID
+    trangThaiLopHocPhan: TrangThaiLopHocPhan
+    soLuongToiDa: ID
+    moTa: String
+}
+type HocPhan{
+    hocPhanId : ID
+    maHocPhan : String!
+    soTinChiLyThuyet: String
+    getSoTinChiThucHanh: String
+    moTa: String
+    batBuoc: Boolean
 }
 #==========================================================================================
 input RegisterAccountInput {
@@ -240,6 +278,23 @@ input HocKyInput {
     namKetThuc:Int
 }
 
+input  LopHocPhanInput{
+    maLopHocPhan: String!
+    tenVietTat: String
+    tenLopHocPhan: String
+    soNhomThucHanh: ID
+    trangThaiLopHocPhan: TrangThaiLopHocPhan
+    soLuongToiDa: ID
+    moTa: String
+}
+
+input HocPhanInput{
+    maHocPhan : String!
+    soTinChiLyThuyet: String
+    getSoTinChiThucHanh: String
+    moTa: String
+    batBuoc: Boolean
+}
 #==========================================================================================
 
 type AccountResponse implements ResponseInterface{
@@ -350,6 +405,31 @@ type NamHocsResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:[NamHoc]
+}
+
+type  LopHocPhanReponse implements  ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:LopHocPhan
+}
+type  LopHocPhansResponse implements  ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[LopHocPhan]
+}
+type  HocPhanResponse implements  ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data: HocPhan
+}
+type  HocPhansResponse implements  ResponseInterface{
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[HocPhan]
 }
 
 
