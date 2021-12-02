@@ -164,15 +164,15 @@ public class MutationResolver implements GraphQLMutationResolver {
             sinhVienService.deleteSinhVien(sinhVienId);
             return SinhVienResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xoa sinh vien thanh cong")
+                    .message("Xóa sinh viên thành công")
                     .build();
         } catch (UserNotFoundException e) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Xoa khong thanh công")
+                    .message("Xóa không thành công")
                     .errors(new ArrayList<>() {
                         {
-                            add(new ErrorsResponse("Khong tim thay sinh vien"));
+                            add(new ErrorsResponse("Không tìm thấy sinh viên"));
                         }
                     })
                     .build();
@@ -186,26 +186,26 @@ public class MutationResolver implements GraphQLMutationResolver {
             SinhVien sinhVien = lopService.addSinhVienVaoLop(sinhVienId, lopId);
             return SinhVienResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Them sinh vien vao lop thanh cong")
+                    .message("Thêm sinh viên vào lớp thành công")
                     .data(sinhVien)
                     .build();
         } catch (LopNotFoundException e) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Them sinh vien vao lop khong thanh công")
+                    .message("Thêm sinh viên vào lớp không thành công")
                     .errors(new ArrayList<>() {
                         {
-                            add(new ErrorsResponse("Khong tim thay lop"));
+                            add(new ErrorsResponse("Không tìm thấy lớp"));
                         }
                     })
                     .build();
         } catch (UserNotFoundException e) {
             return SinhVienResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Them sinh vien vao lop khong thanh công")
+                    .message("Thêm sinh viên vào lớp không thành công")
                     .errors(new ArrayList<>() {
                         {
-                            add(new ErrorsResponse("Khong tim thay sinh vien"));
+                            add(new ErrorsResponse("Không tìm thấy sinh viên"));
                         }
                     })
                     .build();
@@ -265,7 +265,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             return UpdateSVResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(sinhVien)
-                    .message("update sinh viên thành công").build();
+                    .message("Cập nhật sinh viên thành công").build();
         }
         return UpdateSVResponse.builder()
                 .status(ResponseStatus.ERROR)
@@ -274,7 +274,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                         add(new ErrorsResponse("Không tìm thấy sinh viên"));
                     }
                 })
-                .message("update sinh viên không thành công").build();
+                .message("Cập nhật sinh sinh viên không thành công").build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -287,7 +287,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             return KhoaResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(khoa)
-                    .message("update khoa thành công").build();
+                    .message("Cập nhật khoa thành công").build();
         }
         return KhoaResponse.builder()
                 .status(ResponseStatus.ERROR)
@@ -296,7 +296,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                         add(new ErrorsResponse("Không tìm thấy khoa"));
                     }
                 })
-                .message("update khoa không thành công").build();
+                .message("Cập nhật khoa không thành công").build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -305,15 +305,15 @@ public class MutationResolver implements GraphQLMutationResolver {
             khoaService.deleteKhoa(khoaId);
             return KhoaResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xoa khoa thanh cong")
+                    .message("Xóa khoa thành công")
                     .build();
         } catch (KhoaNotFoundException e) {
             return KhoaResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Xoa khong thanh công")
+                    .message("Xóa không thành công")
                     .errors(new ArrayList<>() {
                         {
-                            add(new ErrorsResponse("Khong tim thay khoa"));
+                            add(new ErrorsResponse("Không tìm thấy khoa"));
                         }
                     })
                     .build();
@@ -354,7 +354,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             return ChuyenNganhResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(chuyenNganh)
-                    .message("update Chuyên ngành thành công").build();
+                    .message("Cập nhật Chuyên ngành thành công").build();
         }
         return ChuyenNganhResponse.builder()
                 .status(ResponseStatus.ERROR)
@@ -363,7 +363,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                         add(new ErrorsResponse("Không tìm thấy chuyên ngành"));
                     }
                 })
-                .message("update chuyên ngành không thành công").build();
+                .message("Cập nhật chuyên ngành không thành công").build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -372,7 +372,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             chuyenNganhService.deleteChuyenNganh(chuyenNganhId);
             return ChuyenNganhResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xoa chuyên ngành thành công")
+                    .message("Xóa chuyên ngành thành công")
                     .build();
         }catch (ChuyenNganhNotFoundException e) {
             return ChuyenNganhResponse.builder()
@@ -423,11 +423,11 @@ public class MutationResolver implements GraphQLMutationResolver {
 
         LopResponse lopResponse = new LopResponse();
         if (lopResp == null) {
-            lopResponse.setMessage("Tao lop khong thanh cong");
+            lopResponse.setMessage("Tạo lớp không thành công");
             lopResponse.setStatus(ResponseStatus.ERROR);
 
         } else {
-            lopResponse.setMessage("Tao lop thanh cong");
+            lopResponse.setMessage("Tạo lớp không thành công");
             lopResponse.setStatus(ResponseStatus.OK);
             lopResponse.setData(lopResp);
         }
@@ -440,12 +440,12 @@ public class MutationResolver implements GraphQLMutationResolver {
         if (isDeleted) {
             DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
             deleteUserResponse.setStatus(ResponseStatus.OK);
-            deleteUserResponse.setMessage("Xoa user thanh cong");
+            deleteUserResponse.setMessage("Xóa user thành công");
             return deleteUserResponse;
         } else {
             DeleteUserResponse deleteUserResponse = new DeleteUserResponse();
             deleteUserResponse.setStatus(ResponseStatus.ERROR);
-            deleteUserResponse.setMessage("Xoa user khong thanh cong");
+            deleteUserResponse.setMessage("Xóa user không thành công");
             return deleteUserResponse;
         }
     }
@@ -472,7 +472,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .status(ResponseStatus.OK)
                     .message("Đổi mật khẩu không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {{
-                        add(ErrorsResponse.builder().message("Token khong dung!").build());
+                        add(ErrorsResponse.builder().message("Token không đúng!").build());
                     }})
                     .build();
         }
@@ -515,7 +515,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             return HocKyResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(hocKy)
-                    .message("update Học Kỳ thành công").build();
+                    .message("Cập nhật Học Kỳ thành công").build();
         }
         return HocKyResponse.builder()
                 .status(ResponseStatus.ERROR)
@@ -524,7 +524,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                         add(new ErrorsResponse("Không tìm thấy Học Kỳ"));
                     }
                 })
-                .message("update Học Kỳ không thành công").build();
+                .message("Cập nhật Học Kỳ không thành công").build();
     }
 
 
@@ -534,7 +534,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             hocKyService.deleteKhoa(hocKyId);
             return HocKyResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xoa học kỳ thanh cong")
+                    .message("Xóa học kỳ thành công")
                     .build();
         } catch (HocKyNotFoundException e) {
             return HocKyResponse.builder()
@@ -585,7 +585,7 @@ public class MutationResolver implements GraphQLMutationResolver {
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
                     .data(monHoc)
-                    .message("update Môn Học thành công").build();
+                    .message("Cập nhật Môn Học thành công").build();
         }
         return MonHocResponse.builder()
                 .status(ResponseStatus.ERROR)
@@ -594,7 +594,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                         add(new ErrorsResponse("Không tìm thấy Môn Học"));
                     }
                 })
-                .message("update Môn Học không thành công").build();
+                .message("Cập nhật Môn Học không thành công").build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -608,10 +608,10 @@ public class MutationResolver implements GraphQLMutationResolver {
         } catch (MonHocNotFoundException e) {
             return MonHocResponse.builder()
                     .status(ResponseStatus.ERROR)
-                    .message("Xoa không thành công")
+                    .message("Xóa không thành công")
                     .errors(new ArrayList<>() {
                         {
-                            add(new ErrorsResponse("không tìm thấy Môn Học"));
+                            add(new ErrorsResponse("Không tìm thấy Môn Học"));
                         }
                     })
                     .build();
