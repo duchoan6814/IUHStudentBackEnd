@@ -113,7 +113,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         }
         return KhoaResponse.builder()
                 .status(ResponseStatus.ERROR)
-                .message("Xóa không thành công")
+                .message("Tìm không thành công")
                 .errors(new ArrayList<>(){
                     {
                         add(new ErrorsResponse("Không tìm thấy Khoa"));
