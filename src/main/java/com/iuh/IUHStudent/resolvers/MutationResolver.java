@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @Component
 public class MutationResolver implements GraphQLMutationResolver {
@@ -88,6 +89,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @Autowired
     private  HocPhanService hocPhanService;
+
 
 
     @PreAuthorize("isAnonymous()")
@@ -325,6 +327,16 @@ public class MutationResolver implements GraphQLMutationResolver {
                     })
                     .build();
         }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public SinhVienResponse deleteAllSinhVien() {
+            sinhVienService.deleteAllSinhVien();
+            return SinhVienResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xóa tất cả sinh viên thành công")
+                    .build();
+
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
