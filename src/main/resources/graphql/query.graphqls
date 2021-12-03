@@ -59,6 +59,7 @@ type Mutation {
     createHocPhan(inputs: HocPhanInput!): HocPhanResponse!
     updateHocPhan(inputs: HocPhanInput!,hocPhanId: ID!):HocPhanResponse!
     deleteHocPhan(hocPhanId: ID!): HocPhanResponse!
+    deleteAllSinhVien:SinhVienResponse!
 
 }
 #================================================================
