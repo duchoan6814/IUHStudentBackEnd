@@ -57,6 +57,9 @@ public class MutationResolver implements GraphQLMutationResolver {
     private KhoaService khoaService;
 
     @Autowired
+    private ChuyenNganhRespository chuyenNganhRespository;
+
+    @Autowired
     private ChuyenNganhRespository chuyenNganhResponse;
 
     @Autowired
@@ -446,6 +449,7 @@ public class MutationResolver implements GraphQLMutationResolver {
         }
     }
 
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public LopResponse createLop(String tenLop, String khoaHoc) {
         Lop lop = new Lop();
@@ -659,7 +663,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse updateHocKy(HocKyInput inputs, int hocKyId) {
-        HocKy hocKy = hocKyService.findKhoaById(hocKyId);
+        HocKy hocKy = hocKyService.findHcoKyById(hocKyId);
         if (hocKy != null) {
             hocKy.setNamBatDau(inputs.getNamBatDau());
             hocKy.setNamKetThuc(inputs.getNamKetThuc());
@@ -684,7 +688,7 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse deleteHocKy(int hocKyId) {
         try {
-            hocKyService.deleteKhoa(hocKyId);
+            hocKyService.deleteHocKy(hocKyId);
             return HocKyResponse.builder()
                     .status(ResponseStatus.OK)
                     .message("Xóa học kỳ thành công")
@@ -730,7 +734,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse updateMonHoc(MonHocInput inputs, int monHocId) {
-        MonHoc monHoc = monHocService.findKhoaById(monHocId);
+        MonHoc monHoc = monHocService.findMonHocById(monHocId);
         if (monHoc != null) {
             monHoc.setTenMonHoc(inputs.getTenMonHoc());
             monHoc.setMoTa(inputs.getMoTa());
@@ -750,19 +754,40 @@ public class MutationResolver implements GraphQLMutationResolver {
                 .message("Cập nhật Môn Học không thành công").build();
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public MonHocResponse deleteMonHoc(int monHocId) {
+//        try {
+//            monHocService.deleteMonHoc(monHocId);
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.OK)
+//                    .message("Xóa môn học thành công")
+//                    .build();
+//        } catch (MonHocNotFoundException e) {
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.ERROR)
+//                    .message("Xóa không thành công")
+//                    .errors(new ArrayList<>() {
+//                        {
+//                            add(new ErrorsResponse("không tìm thấy Môn Học"));
+//                        }
+//                    })
+//                    .build();
+//        }
+//    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse deleteMonHoc(int monHocId) {
         try {
-            monHocService.deleteKhoa(monHocId);
+            monHocService.deleteMonHoc(monHocId);
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xóa môn học thành công")
+                    .message("Xoa Môn Học thành công")
                     .build();
-        } catch (MonHocNotFoundException e) {
+        }catch (MonHocNotFoundException e) {
             return MonHocResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Xóa không thành công")
-                    .errors(new ArrayList<>() {
+                    .errors(new ArrayList<>(){
                         {
                             add(new ErrorsResponse("Không tìm thấy Môn Học"));
                         }

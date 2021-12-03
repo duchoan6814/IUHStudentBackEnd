@@ -15,7 +15,7 @@ public class HocKyService {
     @Autowired
     private HocKyRepository hocKyRepository;
 
-    public HocKy findKhoaById(int hocKyId) {
+    public HocKy findHcoKyById(int hocKyId) {
         Optional<HocKy> result = hocKyRepository.findById(hocKyId);
         HocKy hocKy = null;
         if (result.isPresent()) {
@@ -24,8 +24,8 @@ public class HocKyService {
         return hocKy;
     }
 
-    public boolean deleteKhoa(int hocKyId) {
-        HocKy hocKy = findKhoaById(hocKyId);
+    public boolean deleteHocKy(int hocKyId) {
+        HocKy hocKy = findHcoKyById(hocKyId);
         if(hocKy == null){
             throw new HocKyNotFoundException(hocKyId);
         }

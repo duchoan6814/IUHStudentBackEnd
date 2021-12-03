@@ -8,9 +8,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class MonHocInput {
-    private int monHocId;
+public class MonHocInputs {
     private String tenMonHoc;
     private String moTa;
-
+    private int chuyenNganhId;
 }
