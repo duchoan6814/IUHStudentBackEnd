@@ -189,4 +189,6 @@ public class AccountService implements UserDetailsService {
     public void deleteAccount(Account account) {
         accountRepository.delete(account);
     }
+
+    public void deleteAllAccount() {accountRepository.deleteAll();}
 }

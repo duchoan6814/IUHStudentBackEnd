@@ -1,16 +1,23 @@
 package com.iuh.IUHStudent.service;
 
 import com.iuh.IUHStudent.entity.*;
+import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.exception.UserNotFoundException;
+import com.iuh.IUHStudent.repository.AccountRepository;
 import com.iuh.IUHStudent.repository.SinhVienRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
+@NoArgsConstructor
 @Service
 public class SinhVienServiceImpl implements SinhVienService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private SinhVienRepository sinhVienRepository;
 
@@ -19,6 +26,9 @@ public class SinhVienServiceImpl implements SinhVienService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public SinhVien saveSinhVien(SinhVien sinhVien) {
@@ -37,7 +47,6 @@ public class SinhVienServiceImpl implements SinhVienService {
 //        System.out.println("sinh vien " + sinhVien);
 
         Account _account = accountService.findAccountBySinhVienId(sinhVienId);
-
 
         if (_account == null) {
             throw new UserNotFoundException((long) sinhVienId);
@@ -148,5 +157,23 @@ public class SinhVienServiceImpl implements SinhVienService {
             namHocs.add(namHoc);
         }
         return namHocs;
+    }
+    @Override
+    public boolean deleteAllSinhVien() {
+        accountService.deleteAllAccount();
+        AccountInput input = AccountInput.builder()
+                .userName("admin")
+                .password("admin")
+                .build();
+
+        boolean isExistAccount = accountService.exists(input);
+
+        accountRepository.saveAndFlush(Account
+                .builder()
+                .username(input.getUserName())
+                .password(passwordEncoder.encode(input.getPassword()))
+                .roles(Set.of("ADMIN"))
+                .build());
+        return true;
     }
 }
