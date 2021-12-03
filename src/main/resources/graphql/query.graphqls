@@ -25,6 +25,8 @@ type Query {
     getHocPhans:HocPhansResponse!
     getHocPhanById(hocPhanId: ID!): HocPhanResponse!
     getMonHocWithChuyenNganhId(chuyenNganhId:ID!):MonHocsResponse!
+    getLopHocPhanWithChuyenNganhId(khoaVienId: ID!):LopHocPhansResponse!
+    getHocPhanWithChuyenNganhId(khoaVienId: ID!):HocPhansResponse!
 }
 
 
@@ -58,10 +60,7 @@ type Mutation {
     updateHocPhan(inputs: HocPhanInput!,hocPhanId: ID!):HocPhanResponse!
     deleteHocPhan(hocPhanId: ID!): HocPhanResponse!
 
-
 }
-#    addMonHoc(inputs:MonHocInputs!):MonHocResponse!
-
 #================================================================
 
 interface ResponseInterface {

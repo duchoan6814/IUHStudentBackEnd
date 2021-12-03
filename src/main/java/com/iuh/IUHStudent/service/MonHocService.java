@@ -33,10 +33,12 @@ public class MonHocService {
 
     public boolean deleteMonHoc(int monHocId) {
         MonHoc monHoc = findMonHocById(monHocId);
+        System.out.println("aaa"+monHoc);
         if(monHoc == null){
             throw new MonHocNotFoundException(monHocId);
         }
-        monHocRepository.deleteById(monHocId);
+        monHocRepository.delete(monHoc);
+
         return true;
     }
     public List<MonHoc> getMonHocWithName(String tenMonHoc) {

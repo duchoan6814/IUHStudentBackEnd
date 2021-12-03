@@ -20,7 +20,7 @@ public class MonHoc  {
     private String tenMonHoc;
     private String moTa;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "khoaVien_fk")
     private KhoaVien khoaVien;
 

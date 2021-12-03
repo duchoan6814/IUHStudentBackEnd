@@ -3,7 +3,6 @@ package com.iuh.IUHStudent.entityinput;
 import com.iuh.IUHStudent.entity.TrangThaiLopHocPhan;
 import lombok.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

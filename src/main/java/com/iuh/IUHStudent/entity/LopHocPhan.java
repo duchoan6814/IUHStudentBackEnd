@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class    LopHocPhan {
+public class LopHocPhan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int lopHocPhanId;
@@ -30,7 +30,7 @@ public class    LopHocPhan {
     @OneToMany(mappedBy = "lopHocPhan" , cascade = CascadeType.ALL)
     private List<SinhVienLopHocPhan> sinhViens;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "hocPhan_fk")
     private HocPhan hocPhan;
 

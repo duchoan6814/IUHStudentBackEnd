@@ -26,11 +26,11 @@ public class LichHoc {
     private int tietHocKetThuc;
     private String ghiChu;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "lopHocPhan_fk")
     private LopHocPhan lopHocPhan;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "phongHoc_fk")
     private PhongHoc phongHoc;
 }

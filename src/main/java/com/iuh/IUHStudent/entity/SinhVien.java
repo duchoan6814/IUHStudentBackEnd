@@ -44,7 +44,7 @@ public class SinhVien {
     @OneToOne(mappedBy = "sinhVien")
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "lop_fk")
     private Lop lop;
 
