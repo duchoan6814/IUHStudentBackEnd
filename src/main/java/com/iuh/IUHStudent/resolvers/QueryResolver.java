@@ -285,6 +285,45 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhansResponse getLopHocPhanWithChuyenNganhId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<LopHocPhan> lopHocPhans = lopHocPhanService.getLopHocPhanByKhoaVienId(khoaVienId);
+        if (lopHocPhans.size() > 0) {
+            return LopHocPhansResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(lopHocPhans)
+                    .build();
+        }
+        return LopHocPhansResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Lớp học phần"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhansResponse getHocPhanWithChuyenNganhId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<HocPhan> hocPhans = hocPhanService.getHocPhanByKhoaVienId(khoaVienId);
+        if (hocPhans.size() > 0) {
+            return HocPhansResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocPhans)
+                    .build();
+        }
+        return HocPhansResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Học phần"));
+                    }
+                })
+                .build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {

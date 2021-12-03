@@ -2,7 +2,6 @@ package com.iuh.IUHStudent.entityinput;
 
 import lombok.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

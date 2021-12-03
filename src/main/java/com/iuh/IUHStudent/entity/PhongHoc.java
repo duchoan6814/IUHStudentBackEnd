@@ -21,7 +21,7 @@ public class PhongHoc {
     private String tenPhongHoc;
     private int sucChua;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "dayNha_fk")
     private DayNha dayNha;
 

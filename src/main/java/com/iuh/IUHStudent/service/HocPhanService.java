@@ -2,11 +2,15 @@ package com.iuh.IUHStudent.service;
 
 
 import com.iuh.IUHStudent.entity.HocPhan;
+import com.iuh.IUHStudent.entity.LopHocPhan;
+import com.iuh.IUHStudent.entity.TrangThaiLopHocPhan;
 import com.iuh.IUHStudent.exception.HocPhanNotFoundException;
 import com.iuh.IUHStudent.repository.HocPhanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Service
 public class HocPhanService {
@@ -29,5 +33,24 @@ public class HocPhanService {
         }
         hocPhanRespository.deleteById(hocPhanId);
         return true;
+    }
+
+    public List<HocPhan> getHocPhanByKhoaVienId(int khoaVienId) {
+        List<Object[]> hps =  hocPhanRespository.findHocPhanByKhoaVienId(khoaVienId);
+        List<HocPhan> _hps = new ArrayList<>();
+        for (Object[] obj :
+                hps) {
+            HocPhan _hp = new HocPhan();
+            _hp.setHocPhanId((Integer) obj[0]);
+            _hp.setMaHocPhan((String) obj[1]);
+            _hp.setSoTinChiLyThuyet((String) obj[2]);
+            _hp.setGetSoTinChiThucHanh((String) obj[3]);
+            _hp.setMoTa((String) obj[4]);
+            _hp.setBatBuoc((boolean) obj[5]);
+
+            _hps.add(_hp);
+        }
+
+        return _hps;
     }
 }

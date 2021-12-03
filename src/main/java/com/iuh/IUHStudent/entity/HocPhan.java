@@ -23,23 +23,28 @@ public class HocPhan {
     private String getSoTinChiThucHanh;
     private String moTa;
     private boolean batBuoc;
+
     @OneToMany(fetch = FetchType.EAGER,targetEntity = LopHocPhan.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "hocPhan_fk",referencedColumnName = "hocPhanId")
     private Set<LopHocPhan> lopHocPhans = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "hocKy_fk")
     private HocKy hocKy;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "monHocTienQuyet_fk")
     private MonHoc monHocTienQuyet;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "monHocSongHanh_fk")
     private MonHoc monHocSongHanh;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "monHocTruoc_fk")
     private MonHoc monHocTruoc;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "monHoc_fk")
+    private MonHoc monHoc;
 }

@@ -16,12 +16,12 @@ public class SinhVienLopHocPhan {
     @EmbeddedId
     private SinhVienLopHocPhanPK id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("sinhVienId")
     @JoinColumn(name = "sinhVienId")
     private SinhVien sinhVien;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("lopHocPhanId")
     @JoinColumn(name = "lopHocPhanId")
     private LopHocPhan lopHocPhan;
