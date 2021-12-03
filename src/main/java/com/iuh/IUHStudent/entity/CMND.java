@@ -20,7 +20,7 @@ public class CMND {
     private String noiCap;
     private Date ngayCap;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sinhVienId")
     private SinhVien sinhVien;
 }

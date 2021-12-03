@@ -7,8 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class HocKyInput {
-    private int namBatDau;
-    private int namKetThuc;
+public class MonHocInputs {
+    private String tenMonHoc;
     private String moTa;
+    private int chuyenNganhId;
 }

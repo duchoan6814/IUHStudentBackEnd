@@ -24,7 +24,7 @@ public class ChuyenNganh{
     @JoinColumn(name = "chuyenNganh_fk",referencedColumnName = "chuyenNganhId")
     private Set<Lop> lops = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "khoaVien_fk")
     private KhoaVien khoaVien;
 

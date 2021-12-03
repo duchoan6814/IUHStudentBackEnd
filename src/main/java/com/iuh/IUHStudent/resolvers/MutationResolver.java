@@ -15,16 +15,7 @@ import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.RegisterAccountInput;
 import com.iuh.IUHStudent.entityinput.account_input.UpdatePasswordInput;
 import com.iuh.IUHStudent.exception.*;
-import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
-
-import com.iuh.IUHStudent.repository.ChuyenNganhRespository;
-
-import com.iuh.IUHStudent.repository.HocKyRepository;
-
-import com.iuh.IUHStudent.repository.HocKyRespository;
-import com.iuh.IUHStudent.repository.KhoaRepository;
-import com.iuh.IUHStudent.repository.LopRepository;
-import com.iuh.IUHStudent.repository.MonHocRepository;
+import com.iuh.IUHStudent.repository.*;
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
@@ -66,6 +57,9 @@ public class MutationResolver implements GraphQLMutationResolver {
     private KhoaService khoaService;
 
     @Autowired
+    private ChuyenNganhRespository chuyenNganhRespository;
+
+    @Autowired
     private ChuyenNganhRespository chuyenNganhResponse;
 
     @Autowired
@@ -82,6 +76,19 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @Autowired
     private MonHocService monHocService;
+
+    @Autowired
+    private LopHocPhanService lopHocPhanService;
+
+    @Autowired
+    private LopHocPhanRepository lopHocPhanRepository;
+
+    @Autowired
+    private HocPhanRepository hocPhanRepository;
+
+    @Autowired
+    private  HocPhanService hocPhanService;
+
 
     @PreAuthorize("isAnonymous()")
     public AccountResponse login(String username, String password) {
@@ -386,7 +393,36 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhanRespone createLopHocPhan(LopHocPhanInput inputs) {
+        LopHocPhan lopHocPhan = LopHocPhan.builder()
+                .maLopHocPhan(inputs.getMaLopHocPhan())
+                .tenLopHocPhan(inputs.getTenLopHocPhan())
+                .tenVietTat(inputs.getTenVietTat())
+                .soNhomThucHanh(inputs.getSoNhomThucHanh())
+                .trangThaiLopHocPhan(inputs.getTrangThaiLopHocPhan())
+                .soLuongToiDa(inputs.getSoLuongToiDa())
+                .moTa(inputs.getMoTa())
+                .build();
+        try {
+            LopHocPhan lopHocPhanResp = lopHocPhanRepository.save(lopHocPhan);
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo lớp học phần thành công")
+                    .data(lopHocPhanResp)
+                    .build();
+        } catch (LopHocPhanNotFoundException exception) {
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Tạo lớp học phần không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Lớp học phần đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
     @PreAuthorize("hasAuthority('ADMIN')")
     public ChuyenNganhResponse addChuyenNganh(ChuyenNganhInputs inputs) {
         ChuyenNganh chuyenNganh = ChuyenNganh.builder()
@@ -412,6 +448,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .build();
         }
     }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public LopResponse createLop(String tenLop, String khoaHoc) {
@@ -498,6 +535,126 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .errors(new ArrayList<ErrorsResponse>() {
                         {
                             add(new ErrorsResponse("Học Kỳ đã tồn tại!"));
+                            }
+                    })
+                    .build();
+        }
+    }
+    public LopHocPhanRespone updateLopHocPhan(LopHocPhanInput inputs , int lopHocPhanId) {
+        LopHocPhan lopHocPhan = lopHocPhanService.findLopHocPhanById(lopHocPhanId);
+        if(lopHocPhan != null) {
+            lopHocPhan.setTenLopHocPhan(inputs.getTenLopHocPhan());
+            lopHocPhan.setMaLopHocPhan(inputs.getMaLopHocPhan());
+            lopHocPhan.setTenVietTat(inputs.getTenVietTat());
+            lopHocPhan.setSoNhomThucHanh(inputs.getSoNhomThucHanh());
+            lopHocPhan.setTrangThaiLopHocPhan(inputs.getTrangThaiLopHocPhan());
+            lopHocPhan.setSoLuongToiDa(inputs.getSoLuongToiDa());
+            lopHocPhan.setMoTa(inputs.getMoTa());
+            lopHocPhanRepository.save(lopHocPhan);
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.OK)
+                    .data(lopHocPhan)
+                    .message("update lớp học phần  thành công").build();
+        }
+        return LopHocPhanRespone.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy lớp học phần"));
+                    }
+                })
+                .message("update lớp học phần không thành công").build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhanRespone deleteLopHocPhan(int lopHocPhanId) {
+        try {
+            lopHocPhanService.deleteLopHocPhan(lopHocPhanId);
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoá lớp học phần thành công")
+                    .build();
+        } catch (LopHocPhanNotFoundException e) {
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xoá không thành công")
+                    .errors(new ArrayList<>() {
+                        {
+                            add(new ErrorsResponse("Không tìm thấy lớp học phần"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhanResponse createHocPhan(HocPhanInput inputs) {
+        HocPhan hocPhan = HocPhan.builder()
+                .maHocPhan(inputs.getMaHocPhan())
+                .soTinChiLyThuyet(inputs.getSoTinChiLyThuyet())
+                .getSoTinChiThucHanh(inputs.getGetSoTinChiThucHanh())
+                .moTa(inputs.getMoTa())
+                .batBuoc(inputs.isBatBuoc())
+                .build();
+        try {
+            HocPhan hocPhanResp = hocPhanRepository.save(hocPhan);
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo học phần thành công")
+                    .data(hocPhanResp)
+                    .build();
+        } catch (HocPhanNotFoundException exception) {
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Tạo học phần không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Học phần đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhanResponse updateHocPhan(HocPhanInput inputs , int hocPhanId) {
+        HocPhan hocPhan = hocPhanService.findHocPhanById(hocPhanId);
+        if(hocPhan != null) {
+            hocPhan.setMaHocPhan(inputs.getMaHocPhan());
+            hocPhan.setSoTinChiLyThuyet(inputs.getSoTinChiLyThuyet());
+            hocPhan.setGetSoTinChiThucHanh(inputs.getGetSoTinChiThucHanh());
+            hocPhan.setMoTa(inputs.getMoTa());
+            hocPhan.setBatBuoc(inputs.isBatBuoc());
+            hocPhanRepository.save(hocPhan);
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocPhan)
+                    .message("update học phần  thành công").build();
+        }
+        return HocPhanResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy học phần"));
+                    }
+                })
+                .message("update học phần không thành công").build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhanResponse deleteHocPhan(int hocPhanId) {
+        try {
+            hocPhanService.deleteHocPhan(hocPhanId);
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoá học phần thành công")
+                    .build();
+        } catch (HocPhanNotFoundException e) {
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xoá không thành công")
+                    .errors(new ArrayList<>() {
+                        {
+                            add(new ErrorsResponse("Không tìm thấy  học phần"));
                         }
                     })
                     .build();
@@ -506,7 +663,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse updateHocKy(HocKyInput inputs, int hocKyId) {
-        HocKy hocKy = hocKyService.findKhoaById(hocKyId);
+        HocKy hocKy = hocKyService.findHcoKyById(hocKyId);
         if (hocKy != null) {
             hocKy.setNamBatDau(inputs.getNamBatDau());
             hocKy.setNamKetThuc(inputs.getNamKetThuc());
@@ -531,7 +688,7 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse deleteHocKy(int hocKyId) {
         try {
-            hocKyService.deleteKhoa(hocKyId);
+            hocKyService.deleteHocKy(hocKyId);
             return HocKyResponse.builder()
                     .status(ResponseStatus.OK)
                     .message("Xóa học kỳ thành công")
@@ -577,7 +734,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse updateMonHoc(MonHocInput inputs, int monHocId) {
-        MonHoc monHoc = monHocService.findKhoaById(monHocId);
+        MonHoc monHoc = monHocService.findMonHocById(monHocId);
         if (monHoc != null) {
             monHoc.setTenMonHoc(inputs.getTenMonHoc());
             monHoc.setMoTa(inputs.getMoTa());
@@ -597,19 +754,40 @@ public class MutationResolver implements GraphQLMutationResolver {
                 .message("Cập nhật Môn Học không thành công").build();
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public MonHocResponse deleteMonHoc(int monHocId) {
+//        try {
+//            monHocService.deleteMonHoc(monHocId);
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.OK)
+//                    .message("Xóa môn học thành công")
+//                    .build();
+//        } catch (MonHocNotFoundException e) {
+//            return MonHocResponse.builder()
+//                    .status(ResponseStatus.ERROR)
+//                    .message("Xóa không thành công")
+//                    .errors(new ArrayList<>() {
+//                        {
+//                            add(new ErrorsResponse("không tìm thấy Môn Học"));
+//                        }
+//                    })
+//                    .build();
+//        }
+//    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse deleteMonHoc(int monHocId) {
         try {
-            monHocService.deleteKhoa(monHocId);
+            monHocService.deleteMonHoc(monHocId);
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
-                    .message("Xóa môn học thành công")
+                    .message("Xoa Môn Học thành công")
                     .build();
-        } catch (MonHocNotFoundException e) {
+        }catch (MonHocNotFoundException e) {
             return MonHocResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Xóa không thành công")
-                    .errors(new ArrayList<>() {
+                    .errors(new ArrayList<>(){
                         {
                             add(new ErrorsResponse("Không tìm thấy Môn Học"));
                         }

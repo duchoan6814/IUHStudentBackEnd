@@ -1,19 +1,19 @@
 package com.iuh.IUHStudent.response;
 
-import com.iuh.IUHStudent.entity.HocKy;
-import com.iuh.IUHStudent.entity.MonHoc;
+import com.iuh.IUHStudent.entity.LopHocPhan;
 import lombok.*;
 
 import java.util.List;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class MonHocsResponse {
+public class LopHocPhanRespone {
     private ResponseStatus status;
     private List<ErrorsResponse> errors;
     private String message;
-    private List<MonHoc> data;
+    private LopHocPhan data;
 }

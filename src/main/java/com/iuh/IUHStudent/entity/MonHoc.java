@@ -20,12 +20,14 @@ public class MonHoc  {
     private String tenMonHoc;
     private String moTa;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "khoaVien_fk")
     private KhoaVien khoaVien;
 
     @OneToMany(fetch = FetchType.EAGER,targetEntity = HocPhan.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "monHoc_fk",referencedColumnName = "monHocId")
     private Set<HocPhan> hocPhans;
+
+
 
 }

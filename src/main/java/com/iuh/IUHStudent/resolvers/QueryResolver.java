@@ -13,10 +13,7 @@ import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
-import com.iuh.IUHStudent.service.AccountService;
-import com.iuh.IUHStudent.service.ChuyenNganhService;
-import com.iuh.IUHStudent.service.KhoaService;
-import com.iuh.IUHStudent.service.SinhVienService;
+import com.iuh.IUHStudent.service.*;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -62,6 +59,21 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     private MonHocRepository monHocRepository;
+
+    @Autowired
+    private LopHocPhanRepository lopHocPhanRepository;
+
+    @Autowired
+    private LopHocPhanService lopHocPhanService;
+
+    @Autowired
+    private HocPhanRepository hocPhanRepository;
+
+    @Autowired
+    private HocPhanService hocPhanService;
+    
+    @Autowired
+    private MonHocService monHocService;
 
 
     @PreAuthorize("isAuthenticated()")
@@ -234,6 +246,84 @@ public class QueryResolver implements GraphQLQueryResolver {
                 })
                 .build();
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocsResponse getMonHocWithName(String tenMonHoc) throws NoSuchFieldException, IllegalAccessException {
+        List<MonHoc> monHocs = monHocService.getMonHocWithName(tenMonHoc);
+        if (monHocs.size() > 0) {
+            return MonHocsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHocs)
+                    .build();
+        }
+        return MonHocsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
+                    }
+                })
+                .build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public MonHocsResponse getMonHocWithChuyenNganhId(int chuyenNganhId) throws NoSuchFieldException, IllegalAccessException {
+        List<MonHoc> monHocs = monHocService.getMonHocWithChuyenNganh(chuyenNganhId);
+        if (monHocs.size() > 0) {
+            return MonHocsResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(monHocs)
+                    .build();
+        }
+        return MonHocsResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhansResponse getLopHocPhanWithChuyenNganhId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<LopHocPhan> lopHocPhans = lopHocPhanService.getLopHocPhanByKhoaVienId(khoaVienId);
+        if (lopHocPhans.size() > 0) {
+            return LopHocPhansResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(lopHocPhans)
+                    .build();
+        }
+        return LopHocPhansResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Lớp học phần"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhansResponse getHocPhanWithChuyenNganhId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
+        List<HocPhan> hocPhans = hocPhanService.getHocPhanByKhoaVienId(khoaVienId);
+        if (hocPhans.size() > 0) {
+            return HocPhansResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocPhans)
+                    .build();
+        }
+        return HocPhansResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy danh sách Học phần"));
+                    }
+                })
+                .build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public LopsResponse getLops() {
@@ -312,6 +402,61 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .status(ResponseStatus.ERROR)
                 .message("không tìm thấy Môn Học")
                 .data(null)
+                .build();
+    }
+    
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhansResponse getLopHocPhans() {
+        List<LopHocPhan> lopHocPhans = lopHocPhanRepository.findAll();
+        return LopHocPhansResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(lopHocPhans)
+                .build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public LopHocPhanRespone getLopHocPhanById(int lopHocPhanId) {
+        LopHocPhan lopHocPhan = lopHocPhanService.findLopHocPhanById(lopHocPhanId);
+        if (lopHocPhan != null) {
+            return LopHocPhanRespone.builder()
+                    .status(ResponseStatus.OK)
+                    .data(lopHocPhan)
+                    .build();
+        }
+        return LopHocPhanRespone.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy lớp học phần"));
+                    }
+                })
+                .build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhansResponse getHocPhans() {
+        List<HocPhan> hocPhans = hocPhanRepository.findAll();
+        return HocPhansResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(hocPhans)
+                .build();
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public HocPhanResponse getHocPhanById(int hocPhanId) {
+        HocPhan hocPhan = hocPhanService.findHocPhanById(hocPhanId);
+        if (hocPhan != null) {
+            return HocPhanResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(hocPhan)
+                    .build();
+        }
+        return HocPhanResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>(){
+                    {
+                        add(new ErrorsResponse("Không tìm thấy  học phần"));
+                    }
+                })
                 .build();
     }
 }
