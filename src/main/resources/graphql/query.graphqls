@@ -282,6 +282,7 @@ input MonHocInputs {
 input HocKyInput {
     namBatDau:Int
     namKetThuc:Int
+    moTa:String
 }
 
 input  LopHocPhanInput{
