@@ -28,6 +28,7 @@ type Query {
     getLopHocPhanWithChuyenNganhId(khoaVienId: ID!):LopHocPhansResponse!
     getHocPhanWithChuyenNganhId(khoaVienId: ID!):HocPhansResponse!
     getLichHoc(date: String!): LichHocResponse!
+    getDiemThi: DiemThiResponse!
 }
 
 
@@ -213,6 +214,21 @@ type LichHocRes {
     giangVien: String
     ghiChu: String
     nhomThucHanh: Int
+}
+
+type DiemMonHoc {
+    tenMonHoc: String!
+    diemThuongKy: [Float]
+    diemGiuaKy: Float
+    diemCuoiKy: Float
+    diemThucHanh: [Float]
+    diemTrungBinh: Float
+    ghiChu: String
+}
+
+type DiemHocKy {
+    tenHocKy: String!
+    monHocs: [DiemMonHoc]
 }
 #==========================================================================================
 input RegisterAccountInput {
@@ -463,6 +479,13 @@ type  HocPhansResponse implements  ResponseInterface{
     message: String
     errors: [ErrorsResponse]
     data:[HocPhan]
+}
+
+type DiemThiResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[DiemHocKy]
 }
 
 
