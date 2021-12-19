@@ -19,8 +19,8 @@ public class HocPhan {
     private int hocPhanId;
 
     private String maHocPhan;
-    private String soTinChiLyThuyet;
-    private String getSoTinChiThucHanh;
+    private int soTinChiLyThuyet;
+    private int getSoTinChiThucHanh;
     private String moTa;
     private boolean batBuoc;
 

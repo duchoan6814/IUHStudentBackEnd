@@ -153,7 +153,7 @@ public class SinhVienServiceImpl implements SinhVienService {
         for (String obj :
                 sinhViens) {
             NamHoc namHoc = new NamHoc();
-            namHoc.setNamHoc(obj);
+//            namHoc.setNamHoc(obj);
             namHocs.add(namHoc);
         }
         return namHocs;
