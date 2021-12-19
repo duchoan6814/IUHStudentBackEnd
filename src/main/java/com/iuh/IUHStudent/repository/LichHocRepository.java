@@ -15,7 +15,8 @@ public interface LichHocRepository extends JpaRepository<LichHoc, Integer> {
                     "lhp.ma_lop_hoc_phan, lhp.ten_lop_hoc_phan,\n" +
                     "ph.ten_phong_hoc,\n" +
                     "dn.ten_day_nha,\n" +
-                    "gv.ho_ten_dem, gv.ten \n" +
+                    "gv.ho_ten_dem, gv.ten, \n" +
+                    "lh.nhom_thuc_hanh\n"+
                     "FROM lich_hoc lh\n" +
                     "Join lop_hoc_phan lhp ON lh.lop_hoc_phan_fk = lhp.lop_hoc_phan_id\n" +
                     "JOIN sinhvien_lophocphan sl ON sl.lop_hoc_phan_id = lhp.lop_hoc_phan_id\n" +
