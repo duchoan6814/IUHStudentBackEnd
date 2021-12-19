@@ -55,6 +55,7 @@ public class LichHocService {
                     .tietHocKetThuc((Integer) obj[6])
                     .lopHocPhan(_lopHocPhan)
                     .phongHoc(_phongHoc)
+                    .nhomThucHanh((Integer) obj[13])
                     .build();
 
             _lichHocs.add(_lichHoc);

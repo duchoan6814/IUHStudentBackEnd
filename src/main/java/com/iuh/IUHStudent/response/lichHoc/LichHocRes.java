@@ -10,4 +10,5 @@ public class LichHocRes {
     private String phong;
     private String giangVien;
     private String ghiChu;
+    private int nhomThucHanh;
 }
