@@ -8,7 +8,6 @@ import lombok.*;
 @Setter
 @Builder
 public class HocKyInput {
-    private int namBatDau;
-    private int namKetThuc;
+    private int soThuTu;
     private String moTa;
 }

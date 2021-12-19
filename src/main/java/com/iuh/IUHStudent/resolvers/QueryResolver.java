@@ -9,6 +9,9 @@ import com.iuh.IUHStudent.repository.SinhVienRepository;
 import com.iuh.IUHStudent.repository.*;
 
 import com.iuh.IUHStudent.response.*;
+import com.iuh.IUHStudent.response.diem.DiemHocKy;
+import com.iuh.IUHStudent.response.diem.DiemMonHoc;
+import com.iuh.IUHStudent.response.diem.DiemThiResponse;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.lichHoc.DayOfWeek;
@@ -31,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,6 +90,68 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     LichHocService lichHocService;
+
+    @Autowired
+    private HocKyService hocKyService;
+
+    @Autowired
+    SinhVienLopHocPhanService sinhVienLopHocPhanService;
+
+    @PreAuthorize("hasAuthority('USER')")
+    public DiemThiResponse getDiemThi() {
+        Account _currentAccount = accountService.getCurrentAccount();
+        DateFormat _df = new SimpleDateFormat("YYYY");
+
+        try {
+            List<HocKy> _hocKys = hocKyService.findHocKyBySinhVienId(93);
+            List<DiemHocKy> _diemHocKys = new ArrayList<>();
+
+            _hocKys.forEach(i -> {
+                List<SinhVienLopHocPhan> _sinhVienLopHocPhans = sinhVienLopHocPhanService.getSinhVienLopHocPhanByHocKy(_currentAccount.getSinhVien().getSinhVienId(), i.getHocKyId());
+
+                List<DiemMonHoc> _diemMonHocs = new ArrayList<>();
+
+                _sinhVienLopHocPhans.forEach(_i -> {
+
+
+                    Double _diemTrungBinh = Helper.round(Helper.tinhDiemTrungBinhh(_i), 2);
+
+                    DiemMonHoc _diemMonHoc = DiemMonHoc.builder()
+                            .tenMonHoc(_i.getLopHocPhan().getHocPhan().getMonHoc().getTenMonHoc())
+                            .diemCuoiKy((float) _i.getDiemCuoiKy())
+                            .diemGiuaKy((float) _i.getDiemGiuaKy())
+                            .diemThuongKy(_i.getDiemThuongKy())
+                            .diemThucHanh(_i.getDiemThucHanh())
+                            .diemTrungBinh(_diemTrungBinh)
+                            .ghiChu(_i.getGhiChu())
+                            .build();
+
+                    _diemMonHocs.add(_diemMonHoc);
+                });
+
+                DiemHocKy _diemHocKy = DiemHocKy.builder()
+                        .tenHocKy("Học kỳ " + i.getSoThuTu() + "(" + _df.format(i.getNamHoc().getStartDate()) + "-" + _df.format(i.getNamHoc().getEndDate()) + ")")
+                        .monHocs(_diemMonHocs)
+                        .build();
+
+                _diemHocKys.add(_diemHocKy);
+            });
+
+            return DiemThiResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin môn học thành công!")
+                    .data(_diemHocKys)
+                    .build();
+        } catch (ParseException e) {
+            return DiemThiResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Lấy thông tin điểm thi không thành công.")
+                    .errors(new ArrayList<>() {{
+                        add(new ErrorsResponse("Lỗi hệ thống!"));
+                    }})
+                    .build();
+        }
+    }
 
     @PreAuthorize("hasAuthority('USER')")
     public LichHocResponse getLichHoc(String date) {

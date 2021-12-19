@@ -529,8 +529,7 @@ public class MutationResolver implements GraphQLMutationResolver {
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocKyResponse createHocKy(HocKyInput inputs) {
         HocKy hocKy = HocKy.builder()
-                .namBatDau(inputs.getNamBatDau())
-                .namKetThuc(inputs.getNamKetThuc())
+                .soThuTu(inputs.getSoThuTu())
                 .moTa(inputs.getMoTa())
                 .build();
         try {
@@ -677,8 +676,7 @@ public class MutationResolver implements GraphQLMutationResolver {
     public HocKyResponse updateHocKy(HocKyInput inputs, int hocKyId) {
         HocKy hocKy = hocKyService.findHcoKyById(hocKyId);
         if (hocKy != null) {
-            hocKy.setNamBatDau(inputs.getNamBatDau());
-            hocKy.setNamKetThuc(inputs.getNamKetThuc());
+            hocKy.setSoThuTu(inputs.getSoThuTu());
             hocKy.setMoTa(inputs.getMoTa());
             hocKyRepository.save(hocKy);
             return HocKyResponse.builder()
