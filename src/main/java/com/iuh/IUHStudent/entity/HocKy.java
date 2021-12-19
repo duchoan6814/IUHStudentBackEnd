@@ -18,9 +18,13 @@ public class HocKy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int hocKyId;
 
-    private int namBatDau;
-    private int namKetThuc;
+    private int soThuTu;
+
     private String moTa;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "nam_hoc_fk")
+    private NamHoc namHoc;
 
     @OneToMany(fetch = FetchType.EAGER,targetEntity = HocPhan.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "hocKy_fk",referencedColumnName = "hocKyId")

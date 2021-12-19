@@ -163,8 +163,7 @@ type ChuyenNganh {
 
 type HocKy{
     hocKyId: ID
-    namBatDau: ID
-    namKetThuc: ID
+    soThuTu: Int
     moTa: String
 }
 
@@ -175,7 +174,10 @@ type MonHoc{
 }
 
 type NamHoc {
-    namHoc:String
+    namHocId: ID!
+    startDate: Date
+    endDate: Date
+    hocKy: [HocKy]
 }
 
 type LopHocPhan{
@@ -298,8 +300,7 @@ input MonHocInputs {
 }
 
 input HocKyInput {
-    namBatDau:Int
-    namKetThuc:Int
+    soThuTu: Int
     moTa:String
 }
 
