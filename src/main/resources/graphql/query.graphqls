@@ -209,6 +209,7 @@ type LichHocRes {
     phong: String
     giangVien: String
     ghiChu: String
+    nhomThucHanh: Int
 }
 #==========================================================================================
 input RegisterAccountInput {

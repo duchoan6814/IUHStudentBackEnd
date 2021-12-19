@@ -91,54 +91,69 @@ public class QueryResolver implements GraphQLQueryResolver {
     public LichHocResponse getLichHoc(String date) {
         DateFormat formatter = new SimpleDateFormat("EEEE", new Locale("vi", "VN"));
         Helper.getInstance();
-        DateTime _dateTime = new DateTime(date);
 
-        Date _date = _dateTime.toDate();
-        List<Date> _dateOfWeek = Helper.getDatesInWeek(_date, 2);
-        List<DayOfWeek> _listDateOfWeek = new ArrayList<>();
+        try {
+            DateTime _dateTime = new DateTime(date);
 
-        for (Date _i : _dateOfWeek) {
-            _listDateOfWeek.add(
-                    DayOfWeek.builder()
-                            .name(formatter.format(_i)).build()
-            );
-        }
+            Date _date = _dateTime.toDate();
+            List<Date> _dateOfWeek = Helper.getDatesInWeek(_date, 2);
+            List<DayOfWeek> _listDateOfWeek = new ArrayList<>();
 
-        Account account = accountService.getCurrentAccount();
-
-        List<LichHoc> _lichHocs = lichHocService.getLichHocBySinhVienId(account.getSinhVien().getSinhVienId(), new java.sql.Date(_dateOfWeek.get(0).getTime()), new java.sql.Date(_dateOfWeek.get(_dateOfWeek.size() - 1).getTime()));
-
-        _lichHocs.forEach(i -> {
-            int _ngayHocTrongTuan = i.getNgayHocTrongTuan();
-
-            DayOfWeek _ds = _listDateOfWeek.get(_ngayHocTrongTuan);
-
-            List<LichHocRes> _lichHocRes;
-
-            if (_ds.getMonHocs() == null) {
-                _lichHocRes = new ArrayList<>();
-            } else {
-                _lichHocRes = _ds.getMonHocs();
+            for (Date _i : _dateOfWeek) {
+                _listDateOfWeek.add(
+                        DayOfWeek.builder()
+                                .name(formatter.format(_i)).build()
+                );
             }
 
-            _lichHocRes.add(LichHocRes.builder()
-                    .ghiChu(i.getGhiChu())
-                    .giangVien(i.getLopHocPhan().getGiangViens().iterator().next().getHoTenDem() + " " + i.getLopHocPhan().getGiangViens().iterator().next().getTen())
-                    .lopHocPhan(i.getLopHocPhan().getMaLopHocPhan())
-                    .tenMonHoc(i.getLopHocPhan().getTenLopHocPhan())
-                    .tiet(Integer.toString(i.getTietHocBatDau()) + " - " + Integer.toString(i.getTietHocKetThuc()))
-                    .phong(i.getPhongHoc().getTenPhongHoc())
-                    .build());
+            Account account = accountService.getCurrentAccount();
 
-            _listDateOfWeek.set(_ngayHocTrongTuan, DayOfWeek.builder()
-                    .name(_ds.getName())
-                    .monHocs(_lichHocRes)
-                    .build());
-        });
+            List<LichHoc> _lichHocs = lichHocService.getLichHocBySinhVienId(account.getSinhVien().getSinhVienId(), new java.sql.Date(_dateOfWeek.get(0).getTime()), new java.sql.Date(_dateOfWeek.get(_dateOfWeek.size() - 1).getTime()));
 
-        return LichHocResponse.builder()
-                .message("hello world")
-                .data(_listDateOfWeek).build();
+            _lichHocs.forEach(i -> {
+                int _ngayHocTrongTuan = i.getNgayHocTrongTuan();
+
+                DayOfWeek _ds = _listDateOfWeek.get(_ngayHocTrongTuan);
+
+                List<LichHocRes> _lichHocRes;
+
+                if (_ds.getMonHocs() == null) {
+                    _lichHocRes = new ArrayList<>();
+                } else {
+                    _lichHocRes = _ds.getMonHocs();
+                }
+
+                _lichHocRes.add(LichHocRes.builder()
+                        .ghiChu(i.getGhiChu())
+                        .giangVien(i.getLopHocPhan().getGiangViens().iterator().next().getHoTenDem() + " " + i.getLopHocPhan().getGiangViens().iterator().next().getTen())
+                        .lopHocPhan(i.getLopHocPhan().getMaLopHocPhan())
+                        .tenMonHoc(i.getLopHocPhan().getTenLopHocPhan())
+                        .tiet(Integer.toString(i.getTietHocBatDau()) + " - " + Integer.toString(i.getTietHocKetThuc()))
+                        .phong(i.getPhongHoc().getTenPhongHoc())
+                        .nhomThucHanh(i.getNhomThucHanh())
+                        .build());
+
+                _listDateOfWeek.set(_ngayHocTrongTuan, DayOfWeek.builder()
+                        .name(_ds.getName())
+                        .monHocs(_lichHocRes)
+                        .build());
+            });
+
+            return LichHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin lịch học thành công.")
+                    .data(_listDateOfWeek).build();
+        } catch (Exception e) {
+            return LichHocResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Lấy thông tin lịch học không thành công!")
+                    .errors(new ArrayList<>() {{
+                        add(new ErrorsResponse("Ngày chuyền vô không hợp lệ!"));
+                    }})
+                    .build();
+        }
+
+
     }
 
     @PreAuthorize("isAuthenticated()")
