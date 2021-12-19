@@ -27,6 +27,7 @@ type Query {
     getMonHocWithChuyenNganhId(chuyenNganhId:ID!):MonHocsResponse!
     getLopHocPhanWithChuyenNganhId(khoaVienId: ID!):LopHocPhansResponse!
     getHocPhanWithChuyenNganhId(khoaVienId: ID!):HocPhansResponse!
+    getLichHoc(date: String!): LichHocResponse!
 }
 
 
@@ -195,6 +196,20 @@ type HocPhan{
     moTa: String
     batBuoc: Boolean
 }
+
+type DayOfWeek {
+    name: String!
+    monHocs: [LichHocRes]
+}
+
+type LichHocRes {
+    tenMonHoc: String!
+    lopHocPhan: String!
+    tiet: String!
+    phong: String
+    giangVien: String
+    ghiChu: String
+}
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -304,6 +319,13 @@ input HocPhanInput{
     batBuoc: Boolean
 }
 #==========================================================================================
+
+type LichHocResponse implements ResponseInterface {
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: [DayOfWeek]
+}
 
 type AccountResponse implements ResponseInterface{
     status: ResponseStatus!

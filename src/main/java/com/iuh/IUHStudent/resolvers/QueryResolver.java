@@ -11,10 +11,15 @@ import com.iuh.IUHStudent.repository.*;
 import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
+import com.iuh.IUHStudent.response.lichHoc.DayOfWeek;
+import com.iuh.IUHStudent.response.lichHoc.LichHocRes;
+import com.iuh.IUHStudent.response.lichHoc.LichHocResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
 import com.iuh.IUHStudent.service.*;
+import com.iuh.IUHStudent.util.Helper;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,9 +30,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class QueryResolver implements GraphQLQueryResolver {
@@ -71,10 +80,66 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     private HocPhanService hocPhanService;
-    
+
     @Autowired
     private MonHocService monHocService;
 
+    @Autowired
+    LichHocService lichHocService;
+
+    @PreAuthorize("hasAuthority('USER')")
+    public LichHocResponse getLichHoc(String date) {
+        DateFormat formatter = new SimpleDateFormat("EEEE", new Locale("vi", "VN"));
+        Helper.getInstance();
+        DateTime _dateTime = new DateTime(date);
+
+        Date _date = _dateTime.toDate();
+        List<Date> _dateOfWeek = Helper.getDatesInWeek(_date, 2);
+        List<DayOfWeek> _listDateOfWeek = new ArrayList<>();
+
+        for (Date _i : _dateOfWeek) {
+            _listDateOfWeek.add(
+                    DayOfWeek.builder()
+                            .name(formatter.format(_i)).build()
+            );
+        }
+
+        Account account = accountService.getCurrentAccount();
+
+        List<LichHoc> _lichHocs = lichHocService.getLichHocBySinhVienId(account.getSinhVien().getSinhVienId(), new java.sql.Date(_dateOfWeek.get(0).getTime()), new java.sql.Date(_dateOfWeek.get(_dateOfWeek.size() - 1).getTime()));
+
+        _lichHocs.forEach(i -> {
+            int _ngayHocTrongTuan = i.getNgayHocTrongTuan();
+
+            DayOfWeek _ds = _listDateOfWeek.get(_ngayHocTrongTuan);
+
+            List<LichHocRes> _lichHocRes;
+
+            if (_ds.getMonHocs() == null) {
+                _lichHocRes = new ArrayList<>();
+            } else {
+                _lichHocRes = _ds.getMonHocs();
+            }
+
+            _lichHocRes.add(LichHocRes.builder()
+                    .ghiChu(i.getGhiChu())
+                    .giangVien(i.getLopHocPhan().getGiangViens().iterator().next().getHoTenDem() + " " + i.getLopHocPhan().getGiangViens().iterator().next().getTen())
+                    .lopHocPhan(i.getLopHocPhan().getMaLopHocPhan())
+                    .tenMonHoc(i.getLopHocPhan().getTenLopHocPhan())
+                    .tiet(Integer.toString(i.getTietHocBatDau()) + " - " + Integer.toString(i.getTietHocKetThuc()))
+                    .phong(i.getPhongHoc().getTenPhongHoc())
+                    .build());
+
+            _listDateOfWeek.set(_ngayHocTrongTuan, DayOfWeek.builder()
+                    .name(_ds.getName())
+                    .monHocs(_lichHocRes)
+                    .build());
+        });
+
+        return LichHocResponse.builder()
+                .message("hello world")
+                .data(_listDateOfWeek).build();
+    }
 
     @PreAuthorize("isAuthenticated()")
     public SinhViensResponse getSinhViens() {
@@ -97,7 +162,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return SinhVienResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy Sinh viên"));
                     }
@@ -126,7 +191,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return KhoaResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy Khoa"));
                     }
@@ -158,13 +223,14 @@ public class QueryResolver implements GraphQLQueryResolver {
         return ChuyenNganhResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy Chuyên ngành"));
                     }
                 })
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhViensResponse getSinhVienWithKhoaVienId(int khoaVienId) throws NoSuchFieldException, IllegalAccessException {
         List<SinhVien> sinhViens = sinhVienService.findSinhVienByKhoaVienId(khoaVienId);
@@ -177,7 +243,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return SinhViensResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên"));
                     }
@@ -197,7 +263,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return ChuyenNganhsResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Chuyênh ngành"));
                     }
@@ -207,7 +273,7 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public SinhViensResponse getSinhVienWithKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong) throws NoSuchFieldException, IllegalAccessException {
-        List<SinhVien> sinhViens = sinhVienService.findSinhVienByKhoaVienIdAndNgayVaoTruong(khoaVienId,ngayVaoTruong);
+        List<SinhVien> sinhViens = sinhVienService.findSinhVienByKhoaVienIdAndNgayVaoTruong(khoaVienId, ngayVaoTruong);
         if (sinhViens.size() > 0) {
             return SinhViensResponse.builder()
                     .status(ResponseStatus.OK)
@@ -217,14 +283,13 @@ public class QueryResolver implements GraphQLQueryResolver {
         return SinhViensResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Sinh viên"));
                     }
                 })
                 .build();
     }
-
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -239,13 +304,14 @@ public class QueryResolver implements GraphQLQueryResolver {
         return NamHocsResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách năm học"));
                     }
                 })
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocsResponse getMonHocWithName(String tenMonHoc) throws NoSuchFieldException, IllegalAccessException {
         List<MonHoc> monHocs = monHocService.getMonHocWithName(tenMonHoc);
@@ -258,13 +324,14 @@ public class QueryResolver implements GraphQLQueryResolver {
         return MonHocsResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
                     }
                 })
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocsResponse getMonHocWithChuyenNganhId(int chuyenNganhId) throws NoSuchFieldException, IllegalAccessException {
         List<MonHoc> monHocs = monHocService.getMonHocWithChuyenNganh(chuyenNganhId);
@@ -277,7 +344,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return MonHocsResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Môn Học"));
                     }
@@ -297,7 +364,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return LopHocPhansResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Lớp học phần"));
                     }
@@ -317,7 +384,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return HocPhansResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy danh sách Học phần"));
                     }
@@ -404,7 +471,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(null)
                 .build();
     }
-    
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public LopHocPhansResponse getLopHocPhans() {
         List<LopHocPhan> lopHocPhans = lopHocPhanRepository.findAll();
@@ -413,6 +480,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(lopHocPhans)
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public LopHocPhanRespone getLopHocPhanById(int lopHocPhanId) {
         LopHocPhan lopHocPhan = lopHocPhanService.findLopHocPhanById(lopHocPhanId);
@@ -425,13 +493,14 @@ public class QueryResolver implements GraphQLQueryResolver {
         return LopHocPhanRespone.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy lớp học phần"));
                     }
                 })
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocPhansResponse getHocPhans() {
         List<HocPhan> hocPhans = hocPhanRepository.findAll();
@@ -440,6 +509,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .data(hocPhans)
                 .build();
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     public HocPhanResponse getHocPhanById(int hocPhanId) {
         HocPhan hocPhan = hocPhanService.findHocPhanById(hocPhanId);
@@ -452,7 +522,7 @@ public class QueryResolver implements GraphQLQueryResolver {
         return HocPhanResponse.builder()
                 .status(ResponseStatus.ERROR)
                 .message("Tìm không thành công")
-                .errors(new ArrayList<>(){
+                .errors(new ArrayList<>() {
                     {
                         add(new ErrorsResponse("Không tìm thấy  học phần"));
                     }
