@@ -32,10 +32,19 @@ public class LichHocService {
                     .ten((String) obj[12])
                     .build());
 
+            MonHoc _monHoc = MonHoc.builder()
+                    .tenMonHoc((String) obj[14])
+                    .build();
+
+            HocPhan _hocPhan = HocPhan.builder()
+                    .monHoc(_monHoc)
+                    .build();
+
             LopHocPhan _lopHocPhan = LopHocPhan.builder()
                     .maLopHocPhan((String) obj[7])
                     .tenLopHocPhan((String) obj[8])
                     .giangViens(_giangViens)
+                    .hocPhan(_hocPhan)
                     .build();
 
             DayNha _dayNha = DayNha.builder()

@@ -127,10 +127,11 @@ public class QueryResolver implements GraphQLQueryResolver {
                         .ghiChu(i.getGhiChu())
                         .giangVien(i.getLopHocPhan().getGiangViens().iterator().next().getHoTenDem() + " " + i.getLopHocPhan().getGiangViens().iterator().next().getTen())
                         .lopHocPhan(i.getLopHocPhan().getMaLopHocPhan())
-                        .tenMonHoc(i.getLopHocPhan().getTenLopHocPhan())
+                        .tenMonHoc(i.getLopHocPhan().getHocPhan().getMonHoc().getTenMonHoc())
                         .tiet(Integer.toString(i.getTietHocBatDau()) + " - " + Integer.toString(i.getTietHocKetThuc()))
                         .phong(i.getPhongHoc().getTenPhongHoc())
                         .nhomThucHanh(i.getNhomThucHanh())
+                        .tenLopHocPhan(i.getLopHocPhan().getTenLopHocPhan())
                         .build());
 
                 _listDateOfWeek.set(_ngayHocTrongTuan, DayOfWeek.builder()
@@ -144,6 +145,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                     .message("Lấy thông tin lịch học thành công.")
                     .data(_listDateOfWeek).build();
         } catch (Exception e) {
+            System.out.println(e);
             return LichHocResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Lấy thông tin lịch học không thành công!")

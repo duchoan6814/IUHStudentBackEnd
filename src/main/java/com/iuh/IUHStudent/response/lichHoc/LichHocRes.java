@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public class LichHocRes {
     private String tenMonHoc;
+    private String tenLopHocPhan;
     private String lopHocPhan;
     private String tiet;
     private String phong;

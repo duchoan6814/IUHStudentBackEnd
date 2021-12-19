@@ -204,6 +204,7 @@ type DayOfWeek {
 
 type LichHocRes {
     tenMonHoc: String!
+    tenLopHocPhan: String!
     lopHocPhan: String!
     tiet: String!
     phong: String

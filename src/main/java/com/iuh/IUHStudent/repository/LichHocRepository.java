@@ -15,15 +15,18 @@ public interface LichHocRepository extends JpaRepository<LichHoc, Integer> {
                     "lhp.ma_lop_hoc_phan, lhp.ten_lop_hoc_phan,\n" +
                     "ph.ten_phong_hoc,\n" +
                     "dn.ten_day_nha,\n" +
-                    "gv.ho_ten_dem, gv.ten, \n" +
-                    "lh.nhom_thuc_hanh\n"+
+                    "gv.ho_ten_dem, gv.ten,\n" +
+                    "lh.nhom_thuc_hanh,\n" +
+                    "mh.ten_mon_hoc\n" +
                     "FROM lich_hoc lh\n" +
                     "Join lop_hoc_phan lhp ON lh.lop_hoc_phan_fk = lhp.lop_hoc_phan_id\n" +
                     "JOIN sinhvien_lophocphan sl ON sl.lop_hoc_phan_id = lhp.lop_hoc_phan_id\n" +
                     "JOIN phong_hoc ph ON ph.phong_hoc_id = lh.phong_hoc_fk\n" +
                     "JOIN day_nha dn ON dn.day_nha_id = ph.day_nha_fk \n" +
                     "JOIN giangvien_lophocphan gl ON gl.lop_hoc_phan_id = lhp.lop_hoc_phan_id\n" +
-                    "JOIN giang_vien gv ON gv.giang_vien_id = gl.giang_vien_id \n" +
+                    "JOIN giang_vien gv ON gv.giang_vien_id = gl.giang_vien_id\n" +
+                    "JOIN hoc_phan hp ON hp.hoc_phan_id = lhp.hoc_phan_fk\n" +
+                    "JOIN mon_hoc mh ON hp.mon_hoc_fk = mh.mon_hoc_id\n" +
                     "WHERE sl.sinh_vien_id in (?1) and (lh.thoi_gian_bat_dau <= ?2 AND lh.thoi_gian_ket_thuc >= ?3)",
             nativeQuery = true
 
