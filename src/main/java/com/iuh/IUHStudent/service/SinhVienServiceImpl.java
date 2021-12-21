@@ -188,4 +188,19 @@ public class SinhVienServiceImpl implements SinhVienService {
         List<Integer> _tinChiDatDuocRes = sinhVienRepository.getSoTinChiSinhVienDatDuoc(sinhVienId);
         return _tinChiDatDuocRes.get(0);
     }
+
+    @Override
+    public List<MonHoc> getMonHocOfSinhVienByHocKy(int sinhVienId, int hocKyId) {
+        List<Object[]> _monHocs = sinhVienRepository.getListMonHocOfSinhVienByHocKy(sinhVienId,hocKyId);
+        List<MonHoc> monHocs = new ArrayList<>();
+        for (Object[] obj :
+                _monHocs) {
+            MonHoc monHoc = new MonHoc();
+            monHoc.setTenMonHoc((String) obj[0]);
+            monHoc.setSoTinChiLyThuyet((Integer) obj[1]);
+            monHoc.setSoTinChiThucHanh((Integer) obj[2]);
+            monHocs.add(monHoc);
+        }
+        return monHocs;
+    }
 }

@@ -32,4 +32,27 @@ public class SinhVienLopHocPhanService {
         return _sinhVienLopHocPhans;
     }
 
+    public List<SinhVienLopHocPhan> getListSinhVienLopHocPhanByHocPhan(int hocPhanId) {
+        List<Object[]> _listSinhVienLopHocPhanRes = sinhVienLopHocPhanRespository.getListSinhVienLopHocPhanByLopHocPhanId(hocPhanId);
+
+        List<SinhVienLopHocPhan> _listSinhVienLopHocPhan = new ArrayList<>();
+
+        _listSinhVienLopHocPhanRes.forEach(item -> {
+            Optional<SinhVienLopHocPhan> _sinhVienLopHocPhan = sinhVienLopHocPhanRespository.findById(SinhVienLopHocPhanPK.builder()
+                            .lopHocPhanId(hocPhanId)
+                            .sinhVienId((Integer) item[1])
+                    .build());
+
+            _listSinhVienLopHocPhan.add(_sinhVienLopHocPhan.get());
+        });
+
+        return _listSinhVienLopHocPhan;
+    }
+
+    public SinhVienLopHocPhan getSinhVienLopHocPhanById(int sinhVienId, int lopHocPhanId) {
+        Optional<SinhVienLopHocPhan> _sinhVienLopHocPhan = sinhVienLopHocPhanRespository.findById(SinhVienLopHocPhanPK.builder().sinhVienId(sinhVienId).lopHocPhanId(lopHocPhanId).build());
+
+        return _sinhVienLopHocPhan.get();
+    }
+
 }
