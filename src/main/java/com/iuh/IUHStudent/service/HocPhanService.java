@@ -43,10 +43,8 @@ public class HocPhanService {
             HocPhan _hp = new HocPhan();
             _hp.setHocPhanId((Integer) obj[0]);
             _hp.setMaHocPhan((String) obj[1]);
-            _hp.setSoTinChiLyThuyet((Integer) obj[2]);
-            _hp.setGetSoTinChiThucHanh((Integer) obj[3]);
-            _hp.setMoTa((String) obj[4]);
-            _hp.setBatBuoc((boolean) obj[5]);
+            _hp.setMoTa((String) obj[2]);
+            _hp.setBatBuoc((boolean) obj[3]);
 
             _hps.add(_hp);
         }

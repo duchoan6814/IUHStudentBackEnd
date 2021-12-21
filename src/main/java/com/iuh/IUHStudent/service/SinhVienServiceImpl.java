@@ -176,4 +176,16 @@ public class SinhVienServiceImpl implements SinhVienService {
                 .build());
         return true;
     }
+
+    @Override
+    public int getTongSoTinChiOfSinhVien(int sinhVienId) {
+        List<Integer> _tongTinChiRes = sinhVienRepository.getTongTinChiBySinhVien(sinhVienId);
+        return _tongTinChiRes.get(0);
+    }
+
+    @Override
+    public int getSoTinChiSinhVienDatDuoc(int sinhVienId) {
+        List<Integer> _tinChiDatDuocRes = sinhVienRepository.getSoTinChiSinhVienDatDuoc(sinhVienId);
+        return _tinChiDatDuocRes.get(0);
+    }
 }

@@ -38,6 +38,9 @@ public class IuhStudentApplication {
     @Autowired
     private ChuyenNganhService chuyenNganhService;
 
+    @Autowired
+    private SinhVienService sinhVienService;
+
     public static void main(String[] args) {SpringApplication.run(IuhStudentApplication.class, args);}
 
     @Bean
@@ -47,6 +50,8 @@ public class IuhStudentApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
+
+
 //        List<ChuyenNganh> chuyenNganhs = new ArrayList<>();
 //        chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(3);
         AccountInput input = AccountInput.builder()
