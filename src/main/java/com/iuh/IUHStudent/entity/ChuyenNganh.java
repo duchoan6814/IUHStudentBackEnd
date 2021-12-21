@@ -28,4 +28,7 @@ public class ChuyenNganh{
     @JoinColumn(name = "khoaVien_fk")
     private KhoaVien khoaVien;
 
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "chuyenNganhs")
+    private Set<MonHoc> monHocs = new HashSet<>();
+
 }

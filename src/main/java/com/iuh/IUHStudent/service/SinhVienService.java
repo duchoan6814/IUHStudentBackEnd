@@ -16,4 +16,6 @@ public interface SinhVienService {
     List<SinhVien> findSinhVienByKhoaVienIdAndNgayVaoTruong(int khoaVienId, String ngayVaoTruong);
     List<NamHoc> findNamHocByKhoaVienId(int khoaVienId) throws ParseException;
     boolean deleteAllSinhVien();
+    int getTongSoTinChiOfSinhVien(int sinhVienId);
+    int getSoTinChiSinhVienDatDuoc(int sinhVienId);
 }

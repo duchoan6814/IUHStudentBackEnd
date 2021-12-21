@@ -19,6 +19,8 @@ import com.iuh.IUHStudent.response.lichHoc.LichHocRes;
 import com.iuh.IUHStudent.response.lichHoc.LichHocResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
+import com.iuh.IUHStudent.response.tienDoHocTap.TienDoHocTap;
+import com.iuh.IUHStudent.response.tienDoHocTap.TienDoHocTapResponse;
 import com.iuh.IUHStudent.service.*;
 import com.iuh.IUHStudent.util.Helper;
 import graphql.kickstart.tools.GraphQLQueryResolver;
@@ -96,6 +98,25 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     SinhVienLopHocPhanService sinhVienLopHocPhanService;
+
+    @PreAuthorize("hasAnyAuthority('USER')")
+    public TienDoHocTapResponse getTienDoHocTap() {
+        Account _currentAccount = accountService.getCurrentAccount();
+
+        int _tongTinChi = sinhVienService.getTongSoTinChiOfSinhVien(_currentAccount.getSinhVien().getSinhVienId());
+        int _tinChiDatDuoc = sinhVienService.getSoTinChiSinhVienDatDuoc(_currentAccount.getSinhVien().getSinhVienId());
+
+        TienDoHocTap _tienDoHocTap = TienDoHocTap.builder()
+                .tongTinChi(_tongTinChi)
+                .tinChiDatDuoc(_tinChiDatDuoc)
+                .build();
+
+        return TienDoHocTapResponse.builder()
+                .status(ResponseStatus.OK)
+                .message("Lấy thông tin tiến độ học tập thành công.")
+                .data(_tienDoHocTap)
+                .build();
+    }
 
     @PreAuthorize("hasAuthority('USER')")
     public DiemThiResponse getDiemThi() {

@@ -29,6 +29,7 @@ type Query {
     getHocPhanWithChuyenNganhId(khoaVienId: ID!):HocPhansResponse!
     getLichHoc(date: String!): LichHocResponse!
     getDiemThi: DiemThiResponse!
+    getTienDoHocTap: TienDoHocTapResponse!
 }
 
 
@@ -172,6 +173,9 @@ type MonHoc{
     monHocId:ID
     tenMonHoc:String
     moTa: String
+    soTinChiLyThuyet: Int!
+    soTinChiThucHanh: Int
+    soTinChi: Int
 }
 
 type NamHoc {
@@ -194,8 +198,6 @@ type LopHocPhan{
 type HocPhan{
     hocPhanId : ID
     maHocPhan : String!
-    soTinChiLyThuyet: String
-    getSoTinChiThucHanh: String
     moTa: String
     batBuoc: Boolean
 }
@@ -229,6 +231,11 @@ type DiemMonHoc {
 type DiemHocKy {
     tenHocKy: String!
     monHocs: [DiemMonHoc]
+}
+
+type TienDoHocTap {
+    tongTinChi: Int!
+    tinChiDatDuoc: Int!
 }
 #==========================================================================================
 input RegisterAccountInput {
@@ -298,6 +305,8 @@ input KhoaInput {
 input MonHocInput {
     tenMonHoc:String
     moTa: String
+    soTinChiLyThuyet: Int!
+    soTinChiThucHanh: Int
 }
 
 
@@ -332,8 +341,6 @@ input  LopHocPhanInput{
 
 input HocPhanInput{
     maHocPhan : String!
-    soTinChiLyThuyet: String
-    getSoTinChiThucHanh: String
     moTa: String
     batBuoc: Boolean
 }
@@ -344,6 +351,13 @@ type LichHocResponse implements ResponseInterface {
     errors: [ErrorsResponse]
     message: String
     data: [DayOfWeek]
+}
+
+type TienDoHocTapResponse implements ResponseInterface {
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: TienDoHocTap
 }
 
 type AccountResponse implements ResponseInterface{
