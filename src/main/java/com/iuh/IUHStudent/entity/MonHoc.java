@@ -1,8 +1,10 @@
 package com.iuh.IUHStudent.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,6 +21,8 @@ public class MonHoc  {
 
     private String tenMonHoc;
     private String moTa;
+    private int soTinChiLyThuyet;
+    private int soTinChiThucHanh;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "khoaVien_fk")
@@ -28,6 +32,15 @@ public class MonHoc  {
     @JoinColumn(name = "monHoc_fk",referencedColumnName = "monHocId")
     private Set<HocPhan> hocPhans;
 
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name = "chuyen_nganh_mon_hoc",
+            joinColumns = @JoinColumn(name = "monHocId"),
+            inverseJoinColumns = @JoinColumn(name = "chuyenNganhId"))
+    @JsonManagedReference
+    private Set<ChuyenNganh> chuyenNganhs = new HashSet<>();
 
+    public int soTinChi() {
+        return soTinChiLyThuyet + soTinChiThucHanh;
+    }
 
 }

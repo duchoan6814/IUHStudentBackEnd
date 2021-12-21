@@ -29,6 +29,8 @@ type Query {
     getHocPhanWithChuyenNganhId(khoaVienId: ID!):HocPhansResponse!
     getLichHoc(date: String!): LichHocResponse!
     getDiemThi: DiemThiResponse!
+    getTienDoHocTap: TienDoHocTapResponse!
+    getKetQuaHocTap(hocKyId: ID!): KetQuaHocTapResponse!
 }
 
 
@@ -172,6 +174,9 @@ type MonHoc{
     monHocId:ID
     tenMonHoc:String
     moTa: String
+    soTinChiLyThuyet: Int!
+    soTinChiThucHanh: Int
+    soTinChi: Int
 }
 
 type NamHoc {
@@ -194,8 +199,6 @@ type LopHocPhan{
 type HocPhan{
     hocPhanId : ID
     maHocPhan : String!
-    soTinChiLyThuyet: String
-    getSoTinChiThucHanh: String
     moTa: String
     batBuoc: Boolean
 }
@@ -229,6 +232,17 @@ type DiemMonHoc {
 type DiemHocKy {
     tenHocKy: String!
     monHocs: [DiemMonHoc]
+}
+
+type TienDoHocTap {
+    tongTinChi: Int!
+    tinChiDatDuoc: Int!
+}
+
+type KetQuaHocTap {
+    monHoc: MonHoc,
+    diem: Float,
+    diemTrungBinh: Float
 }
 #==========================================================================================
 input RegisterAccountInput {
@@ -298,6 +312,8 @@ input KhoaInput {
 input MonHocInput {
     tenMonHoc:String
     moTa: String
+    soTinChiLyThuyet: Int!
+    soTinChiThucHanh: Int
 }
 
 
@@ -332,10 +348,12 @@ input  LopHocPhanInput{
 
 input HocPhanInput{
     maHocPhan : String!
-    soTinChiLyThuyet: String
-    getSoTinChiThucHanh: String
     moTa: String
     batBuoc: Boolean
+}
+
+input KetQuaHocTapInput {
+    hocKyId: ID!
 }
 #==========================================================================================
 
@@ -344,6 +362,20 @@ type LichHocResponse implements ResponseInterface {
     errors: [ErrorsResponse]
     message: String
     data: [DayOfWeek]
+}
+
+type KetQuaHocTapResponse implements ResponseInterface {
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: [KetQuaHocTap]
+}
+
+type TienDoHocTapResponse implements ResponseInterface {
+    status: ResponseStatus!
+    errors: [ErrorsResponse]
+    message: String
+    data: TienDoHocTap
 }
 
 type AccountResponse implements ResponseInterface{

@@ -8,6 +8,7 @@ import com.iuh.IUHStudent.entityinput.account_input.AccountInput;
 import com.iuh.IUHStudent.repository.AccountRepository;
 import com.iuh.IUHStudent.service.AccountService;
 import com.iuh.IUHStudent.service.ChuyenNganhService;
+import com.iuh.IUHStudent.service.SinhVienLopHocPhanService;
 import com.iuh.IUHStudent.service.SinhVienService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class IuhStudentApplication {
     private AccountRepository accountRepository;
 
     @Autowired
-    private ChuyenNganhService chuyenNganhService;
+    private SinhVienLopHocPhanService sinhVienLopHocPhanService;
 
     public static void main(String[] args) {SpringApplication.run(IuhStudentApplication.class, args);}
 
@@ -47,6 +48,8 @@ public class IuhStudentApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
+        System.out.println(sinhVienLopHocPhanService.getSinhVienLopHocPhanByHocKy(93, 6));
+
 //        List<ChuyenNganh> chuyenNganhs = new ArrayList<>();
 //        chuyenNganhs = chuyenNganhService.getChuyenNganhByKhoaVienId(3);
         AccountInput input = AccountInput.builder()

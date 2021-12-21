@@ -1,6 +1,7 @@
 package com.iuh.IUHStudent.util;
 
 import com.iuh.IUHStudent.entity.HocPhan;
+import com.iuh.IUHStudent.entity.MonHoc;
 import com.iuh.IUHStudent.entity.SinhVienLopHocPhan;
 
 import java.util.ArrayList;
@@ -41,13 +42,13 @@ public class Helper {
 
         double _tongLyThuyet = (sinhVienLopHocPhan.getDiemThuongKy().stream().mapToDouble(a -> a).average().getAsDouble() * 20 + sinhVienLopHocPhan.getDiemGiuaKy() * 30 + sinhVienLopHocPhan.getDiemCuoiKy() * 50) / 100;
 
-        HocPhan _hocPhan = sinhVienLopHocPhan.getLopHocPhan().getHocPhan();
+        MonHoc _monHoc = sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getMonHoc();
 
-        if (sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getGetSoTinChiThucHanh() <= 0) {
+        if (_monHoc.getSoTinChiThucHanh() <= 0) {
             return _tongLyThuyet;
         }
 
-        return ((_tongLyThuyet * _hocPhan.getSoTinChiLyThuyet()) + (sinhVienLopHocPhan.getDiemThucHanh().stream().mapToDouble(a -> a).average().getAsDouble() * _hocPhan.getGetSoTinChiThucHanh())) / (_hocPhan.getSoTinChiLyThuyet() + _hocPhan.getGetSoTinChiThucHanh());
+        return ((_tongLyThuyet * _monHoc.getSoTinChiLyThuyet()) + (sinhVienLopHocPhan.getDiemThucHanh().stream().mapToDouble(a -> a).average().getAsDouble() * _monHoc.getSoTinChiThucHanh())) / (_monHoc.getSoTinChiLyThuyet() + _monHoc.getSoTinChiThucHanh());
     }
 
     public static Helper getInstance() {

@@ -33,7 +33,6 @@ public class MonHocService {
 
     public boolean deleteMonHoc(int monHocId) {
         MonHoc monHoc = findMonHocById(monHocId);
-        System.out.println("aaa"+monHoc);
         if(monHoc == null){
             throw new MonHocNotFoundException(monHocId);
         }
@@ -46,12 +45,12 @@ public class MonHocService {
         List<MonHoc> _monHocs = new ArrayList<>();
         for (Object[] obj :
                 monHocs) {
-            System.out.println("test " + obj.toString());
             MonHoc _monHoc = new MonHoc();
             _monHoc.setMonHocId((Integer) obj[0]);
             _monHoc.setTenMonHoc((String) obj[1]);
             _monHoc.setMoTa((String) obj[2]);
-
+            _monHoc.setSoTinChiLyThuyet((Integer) obj[3]);
+            _monHoc.setSoTinChiThucHanh((Integer) obj[4]);
             _monHocs.add(_monHoc);
         }
 
@@ -64,12 +63,12 @@ public class MonHocService {
         List<MonHoc> _monHocs = new ArrayList<>();
         for (Object[] obj :
                 monHocs) {
-            System.out.println("test " + obj.toString());
             MonHoc _monHoc = new MonHoc();
             _monHoc.setMonHocId((Integer) obj[0]);
             _monHoc.setTenMonHoc((String) obj[1]);
             _monHoc.setMoTa((String) obj[2]);
-
+            _monHoc.setSoTinChiLyThuyet((Integer) obj[3]);
+            _monHoc.setSoTinChiThucHanh((Integer) obj[4]);
             _monHocs.add(_monHoc);
         }
 

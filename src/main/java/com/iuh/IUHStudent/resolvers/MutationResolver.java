@@ -104,6 +104,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .data(accountService.getCurrentAccount())
                     .build();
         } catch (AuthenticationException ex) {
+            ex.printStackTrace();
             return AccountResponse
                     .builder()
                     .status(ResponseStatus.ERROR)
@@ -601,8 +602,6 @@ public class MutationResolver implements GraphQLMutationResolver {
     public HocPhanResponse createHocPhan(HocPhanInput inputs) {
         HocPhan hocPhan = HocPhan.builder()
                 .maHocPhan(inputs.getMaHocPhan())
-                .soTinChiLyThuyet(inputs.getSoTinChiLyThuyet())
-                .getSoTinChiThucHanh(inputs.getGetSoTinChiThucHanh())
                 .moTa(inputs.getMoTa())
                 .batBuoc(inputs.isBatBuoc())
                 .build();
@@ -632,8 +631,6 @@ public class MutationResolver implements GraphQLMutationResolver {
         HocPhan hocPhan = hocPhanService.findHocPhanById(hocPhanId);
         if(hocPhan != null) {
             hocPhan.setMaHocPhan(inputs.getMaHocPhan());
-            hocPhan.setSoTinChiLyThuyet(inputs.getSoTinChiLyThuyet());
-            hocPhan.setGetSoTinChiThucHanh(inputs.getGetSoTinChiThucHanh());
             hocPhan.setMoTa(inputs.getMoTa());
             hocPhan.setBatBuoc(inputs.isBatBuoc());
             hocPhanRepository.save(hocPhan);
@@ -721,6 +718,8 @@ public class MutationResolver implements GraphQLMutationResolver {
         MonHoc monHoc = MonHoc.builder()
                 .tenMonHoc(inputs.getTenMonHoc())
                 .moTa(inputs.getMoTa())
+                .soTinChiLyThuyet(inputs.getSoTinChiLyThuyet())
+                .soTinChiThucHanh(inputs.getSoTinChiThucHanh())
                 .build();
         try {
             MonHoc monHocReps = monHocRepository.save(monHoc);
@@ -748,6 +747,9 @@ public class MutationResolver implements GraphQLMutationResolver {
         if (monHoc != null) {
             monHoc.setTenMonHoc(inputs.getTenMonHoc());
             monHoc.setMoTa(inputs.getMoTa());
+            monHoc.setSoTinChiLyThuyet(inputs.getSoTinChiLyThuyet());
+            monHoc.setSoTinChiThucHanh(inputs.getSoTinChiThucHanh());
+
             monHocRepository.save(monHoc);
             return MonHocResponse.builder()
                     .status(ResponseStatus.OK)
@@ -763,27 +765,6 @@ public class MutationResolver implements GraphQLMutationResolver {
                 })
                 .message("Cập nhật Môn Học không thành công").build();
     }
-
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public MonHocResponse deleteMonHoc(int monHocId) {
-//        try {
-//            monHocService.deleteMonHoc(monHocId);
-//            return MonHocResponse.builder()
-//                    .status(ResponseStatus.OK)
-//                    .message("Xóa môn học thành công")
-//                    .build();
-//        } catch (MonHocNotFoundException e) {
-//            return MonHocResponse.builder()
-//                    .status(ResponseStatus.ERROR)
-//                    .message("Xóa không thành công")
-//                    .errors(new ArrayList<>() {
-//                        {
-//                            add(new ErrorsResponse("không tìm thấy Môn Học"));
-//                        }
-//                    })
-//                    .build();
-//        }
-//    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public MonHocResponse deleteMonHoc(int monHocId) {
