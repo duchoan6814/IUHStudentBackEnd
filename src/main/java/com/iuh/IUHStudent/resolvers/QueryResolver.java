@@ -12,6 +12,8 @@ import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.diem.DiemHocKy;
 import com.iuh.IUHStudent.response.diem.DiemMonHoc;
 import com.iuh.IUHStudent.response.diem.DiemThiResponse;
+import com.iuh.IUHStudent.response.ketQuaHocTap.KetQuaHocTap;
+import com.iuh.IUHStudent.response.ketQuaHocTap.KetQuaHocTapResponse;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
 import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.lichHoc.DayOfWeek;
@@ -98,6 +100,38 @@ public class QueryResolver implements GraphQLQueryResolver {
 
     @Autowired
     SinhVienLopHocPhanService sinhVienLopHocPhanService;
+
+    @PreAuthorize("hasAnyAuthority('USER')")
+    public KetQuaHocTapResponse getKetQuaHocTap(int hocKyId) {
+        Account currentAccount = accountService.getCurrentAccount();
+
+        List<SinhVienLopHocPhan> _sinhVienLopHocPhans = sinhVienLopHocPhanService.getSinhVienLopHocPhanByHocKy(currentAccount.getSinhVien().getSinhVienId(), hocKyId);
+
+        List<KetQuaHocTap> _ketQuaHocTaps = new ArrayList<>();
+
+        for (SinhVienLopHocPhan sinhVienLopHocPhan : _sinhVienLopHocPhans) {
+            LopHocPhan _lopHocPhan = lopHocPhanService.findLopHocPhanById(sinhVienLopHocPhan.getLopHocPhan().getLopHocPhanId());
+
+            List<SinhVienLopHocPhan> _listSinhVienLopHocPhan = sinhVienLopHocPhanService.getListSinhVienLopHocPhanByHocPhan(_lopHocPhan.getLopHocPhanId());
+
+
+            double _diemTrungBinh = _listSinhVienLopHocPhan.stream().mapToDouble(a -> Helper.tinhDiemTrungBinhh(a)).average().getAsDouble();
+
+            KetQuaHocTap _ketQuaHocTap = KetQuaHocTap.builder()
+                    .monHoc(sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getMonHoc())
+                    .diem(Helper.tinhDiemTrungBinhh(sinhVienLopHocPhan))
+                    .diemTrungBinh(_diemTrungBinh)
+                    .build();
+
+            _ketQuaHocTaps.add(_ketQuaHocTap);
+        }
+
+        return KetQuaHocTapResponse.builder()
+                .status(ResponseStatus.OK)
+                .message("Lấy thông tin kết quả học tập thành công.")
+                .data(_ketQuaHocTaps)
+                .build();
+    }
 
     @PreAuthorize("hasAnyAuthority('USER')")
     public TienDoHocTapResponse getTienDoHocTap() {

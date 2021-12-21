@@ -1,5 +1,6 @@
 package com.iuh.IUHStudent.service;
 
+import com.iuh.IUHStudent.entity.MonHoc;
 import com.iuh.IUHStudent.entity.NamHoc;
 import com.iuh.IUHStudent.entity.SinhVien;
 
@@ -18,4 +19,5 @@ public interface SinhVienService {
     boolean deleteAllSinhVien();
     int getTongSoTinChiOfSinhVien(int sinhVienId);
     int getSoTinChiSinhVienDatDuoc(int sinhVienId);
+    List<MonHoc> getMonHocOfSinhVienByHocKy(int sinhVienId, int hocKyId);
 }

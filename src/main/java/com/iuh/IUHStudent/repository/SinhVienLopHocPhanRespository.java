@@ -23,4 +23,13 @@ public interface SinhVienLopHocPhanRespository extends JpaRepository<SinhVienLop
     )
     List<Object[]> getLopHocPhanOfSinhVienByHocKy(int sinhVienId, int hocKyId);
 
+    @Query(
+            value = "SELECT sl.lop_hoc_phan_id, sl.sinh_vien_id\n" +
+                    "FROM lop_hoc_phan lhp \n" +
+                    "JOIN sinhvien_lophocphan sl on sl.lop_hoc_phan_id = lhp.lop_hoc_phan_id\n" +
+                    "WHERE lhp.lop_hoc_phan_id in (?1)",
+            nativeQuery = true
+    )
+    List<Object[]> getListSinhVienLopHocPhanByLopHocPhanId(int lopHocPhan);
+
 }
