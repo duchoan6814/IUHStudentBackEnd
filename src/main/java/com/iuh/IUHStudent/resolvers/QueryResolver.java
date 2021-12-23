@@ -12,6 +12,8 @@ import com.iuh.IUHStudent.response.*;
 import com.iuh.IUHStudent.response.diem.DiemHocKy;
 import com.iuh.IUHStudent.response.diem.DiemMonHoc;
 import com.iuh.IUHStudent.response.diem.DiemThiResponse;
+import com.iuh.IUHStudent.response.hocKy.HocKySimple;
+import com.iuh.IUHStudent.response.hocKy.HocKySimpleResponse;
 import com.iuh.IUHStudent.response.ketQuaHocTap.KetQuaHocTap;
 import com.iuh.IUHStudent.response.ketQuaHocTap.KetQuaHocTapResponse;
 import com.iuh.IUHStudent.response.khoa.KhoaResponse;
@@ -99,10 +101,46 @@ public class QueryResolver implements GraphQLQueryResolver {
     @Autowired
     private NamHocService namHocService;
 
+    @PreAuthorize("hasAnyAuthority('USER')")
+    public HocKySimpleResponse getHocKySimple() {
+        Account _c = accountService.getCurrentAccount();
+        DateFormat _df = new SimpleDateFormat("YYYY");
+
+        try {
+            List<HocKy> _listHocKy = hocKyService.findHocKyBySinhVienId(_c.getSinhVien().getSinhVienId());
+
+            List<HocKySimple> _listHocKySimple = new ArrayList<>();
+
+            _listHocKy.forEach(i -> {
+                String _startYear = _df.format(i.getNamHoc().getStartDate());
+                String _endYear = _df.format(i.getNamHoc().getEndDate());
+                String _hocKy = "Học kỳ " + i.getSoThuTu();
+
+                _listHocKySimple.add(HocKySimple.builder()
+                                .hocKyId(i.getHocKyId())
+                                .namHoc(_hocKy + " (" + _startYear + "-" + _endYear + ")")
+                        .build());
+            });
+
+            return HocKySimpleResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin học kỳ thành công")
+                    .data(_listHocKySimple)
+                    .build();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return HocKySimpleResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin học kỳ không thành công")
+                    .errors(Arrays.asList(ErrorsResponse.builder()
+                            .message("Lỗi hệ thống").build()))
+                    .build();
+        }
+    }
+
     @PreAuthorize("isAuthenticated()")
     public NamHocAllResponse getNamHoc(String startDate, String endDate) {
-        System.out.println(startDate + endDate);
-
         if (startDate == null && endDate == null) {
 
             List<NamHoc> _listNamHoc = namHocService.getAllNamHoc();
