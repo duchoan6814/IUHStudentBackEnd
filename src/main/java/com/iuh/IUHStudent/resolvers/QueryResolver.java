@@ -19,6 +19,7 @@ import com.iuh.IUHStudent.response.khoa.KhoasResponse;
 import com.iuh.IUHStudent.response.lichHoc.DayOfWeek;
 import com.iuh.IUHStudent.response.lichHoc.LichHocRes;
 import com.iuh.IUHStudent.response.lichHoc.LichHocResponse;
+import com.iuh.IUHStudent.response.namHoc.NamHocAllResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhVienResponse;
 import com.iuh.IUHStudent.response.sinhvien.SinhViensResponse;
 import com.iuh.IUHStudent.response.tienDoHocTap.TienDoHocTap;
@@ -30,21 +31,12 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Component
 public class QueryResolver implements GraphQLQueryResolver {
@@ -105,7 +97,99 @@ public class QueryResolver implements GraphQLQueryResolver {
     private NamHocRepository namHocRepository;
 
     @Autowired
-    NamHocService namHocService;
+    private NamHocService namHocService;
+
+    @PreAuthorize("isAuthenticated()")
+    public NamHocAllResponse getNamHoc(String startDate, String endDate) {
+        System.out.println(startDate + endDate);
+
+        if (startDate == null && endDate == null) {
+
+            List<NamHoc> _listNamHoc = namHocService.getAllNamHoc();
+
+            return NamHocAllResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin năm học thành công.")
+                    .data(_listNamHoc)
+                    .build();
+        }
+
+        if (startDate != null && endDate == null) {
+            try {
+                DateTime _startDate = new DateTime(startDate);
+
+                List<NamHoc> _listNamHoc = namHocService.getNamHocWithStartDate(_startDate.toDate());
+
+                return NamHocAllResponse.builder()
+                        .status(ResponseStatus.OK)
+                        .message("Lấy thông tin năm học thành công.")
+                        .data(_listNamHoc)
+                        .build();
+
+            } catch (Exception ex) {
+                return NamHocAllResponse.builder()
+                        .status(ResponseStatus.OK)
+                        .message("Lấy thông tin năm học không thành công.")
+                        .errors(Arrays.asList(
+                                ErrorsResponse.builder()
+                                        .message("Nhập không đúng định dạng thời gian")
+                                        .build()
+                        ))
+                        .build();
+            }
+
+        }
+
+        if (startDate == null && endDate != null) {
+            try {
+                DateTime _endDate = new DateTime(endDate);
+
+                List<NamHoc> _listNamHoc = namHocService.getNamHocWithEndDate(_endDate.toDate());
+
+                return NamHocAllResponse.builder()
+                        .status(ResponseStatus.OK)
+                        .message("Lấy thông tin năm học thành công.")
+                        .data(_listNamHoc)
+                        .build();
+
+            } catch (Exception ex) {
+                return NamHocAllResponse.builder()
+                        .status(ResponseStatus.OK)
+                        .message("Lấy thông tin năm học không thành công.")
+                        .errors(Arrays.asList(
+                                ErrorsResponse.builder()
+                                        .message("Nhập không đúng định dạng thời gian")
+                                        .build()
+                        ))
+                        .build();
+            }
+        }
+
+        try {
+            DateTime _endDate = new DateTime(endDate);
+            DateTime _startDate = new DateTime(startDate);
+
+            List<NamHoc> _listNamHoc = namHocService.getNamHocBetweenDate(_startDate.toDate(), _endDate.toDate());
+
+            return NamHocAllResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin năm học thành công.")
+                    .data(_listNamHoc)
+                    .build();
+
+        } catch (Exception ex) {
+            return NamHocAllResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Lấy thông tin năm học không thành công.")
+                    .errors(Arrays.asList(
+                            ErrorsResponse.builder()
+                                    .message("Nhập không đúng định dạng thời gian")
+                                    .build()
+                    ))
+                    .build();
+        }
+
+    }
 
     @PreAuthorize("hasAnyAuthority('USER')")
     public KetQuaHocTapResponse getKetQuaHocTap(int hocKyId) {

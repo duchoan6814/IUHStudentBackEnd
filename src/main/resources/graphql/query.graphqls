@@ -33,6 +33,8 @@ type Query {
     getKetQuaHocTap(hocKyId: ID!): KetQuaHocTapResponse!
     getNamHocs: NamHocsResponse!
     getNamHocById(namHocId:ID!):NamHocResponse!
+    getNamHoc(startDate: String, endDate: String): NamHocAllResponse!
+
 }
 
 
@@ -535,6 +537,13 @@ type DiemThiResponse implements ResponseInterface {
     message: String
     errors: [ErrorsResponse]
     data:[DiemHocKy]
+}
+
+type NamHocAllResponse implements  ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[NamHoc]
 }
 
 
