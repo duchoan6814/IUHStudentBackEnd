@@ -31,6 +31,10 @@ type Query {
     getDiemThi: DiemThiResponse!
     getTienDoHocTap: TienDoHocTapResponse!
     getKetQuaHocTap(hocKyId: ID!): KetQuaHocTapResponse!
+    getNamHocs: NamHocsResponse!
+    getNamHocById(namHocId:ID!):NamHocResponse!
+    getNamHoc(startDate: String, endDate: String): NamHocAllResponse!
+    getHocKySimple: HocKySimpleResponse!
 }
 
 
@@ -64,7 +68,9 @@ type Mutation {
     updateHocPhan(inputs: HocPhanInput!,hocPhanId: ID!):HocPhanResponse!
     deleteHocPhan(hocPhanId: ID!): HocPhanResponse!
     deleteAllSinhVien:SinhVienResponse!
-
+    createNamHoc(intputs: NamHocInput!): NamHocResponse!
+    updateNamHoc(inputs: NamHocInput!,namHocId: ID!):NamHocResponse!
+    deleteNamHoc(namHocId: ID!): NamHocResponse!
 }
 #================================================================
 
@@ -244,6 +250,12 @@ type KetQuaHocTap {
     diem: Float,
     diemTrungBinh: Float
 }
+
+type HocKySimple {
+    hocKyId: ID
+    namHoc: String
+}
+
 #==========================================================================================
 input RegisterAccountInput {
     username: String!
@@ -354,6 +366,11 @@ input HocPhanInput{
 
 input KetQuaHocTapInput {
     hocKyId: ID!
+}
+
+input NamHocInput {
+    startDate: Date
+    endDate: Date
 }
 #==========================================================================================
 
@@ -488,6 +505,13 @@ type NamHocsResponse implements ResponseInterface {
     data:[NamHoc]
 }
 
+type NamHocResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:NamHoc
+}
+
 type  LopHocPhanReponse implements  ResponseInterface{
     status: ResponseStatus!
     message: String
@@ -519,6 +543,21 @@ type DiemThiResponse implements ResponseInterface {
     errors: [ErrorsResponse]
     data:[DiemHocKy]
 }
+
+type NamHocAllResponse implements  ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[NamHoc]
+}
+
+type HocKySimpleResponse implements ResponseInterface {
+    status: ResponseStatus!
+    message: String
+    errors: [ErrorsResponse]
+    data:[HocKySimple]
+}
+
 
 
 
