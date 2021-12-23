@@ -90,6 +90,12 @@ public class MutationResolver implements GraphQLMutationResolver {
     @Autowired
     private  HocPhanService hocPhanService;
 
+    @Autowired
+    private NamHocRepository namHocRepository;
+
+    @Autowired
+    private NamHocService namHocService;
+
 
 
     @PreAuthorize("isAnonymous()")
@@ -734,7 +740,7 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .message("Tạo Môn Học không thành công!")
                     .errors(new ArrayList<ErrorsResponse>() {
                         {
-                            add(new ErrorsResponse("Mon Học đã tồn tại!"));
+                            add(new ErrorsResponse("Môn Học đã tồn tại!"));
                         }
                     })
                     .build();
@@ -781,6 +787,74 @@ public class MutationResolver implements GraphQLMutationResolver {
                     .errors(new ArrayList<>(){
                         {
                             add(new ErrorsResponse("Không tìm thấy Môn Học"));
+                        }
+                    })
+                    .build();
+        }
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocResponse createNamHoc(NamHocInput inputs) {
+        NamHoc namHoc = NamHoc.builder()
+                .startDate(inputs.getStartDate())
+                .endDate(inputs.getEndDate())
+                .build();
+        try {
+            NamHoc namHocReps = namHocRepository.save(namHoc);
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo Năm học thành công")
+                    .data(namHocReps)
+                    .build();
+        } catch (NamHocNotFoundException exception) {
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Tạo Năm học không thành công!")
+                    .errors(new ArrayList<ErrorsResponse>() {
+                        {
+                            add(new ErrorsResponse("Năm học đã tồn tại!"));
+                        }
+                    })
+                    .build();
+        }
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocResponse updateNamHoc(NamHocInput inputs, int namHocId) {
+        NamHoc namHoc = namHocService.findNamHocById(namHocId);
+        if (namHoc != null) {
+            namHoc.setStartDate(inputs.getStartDate());
+            namHoc.setEndDate(inputs.getEndDate());
+
+            namHocRepository.save(namHoc);
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(namHoc)
+                    .message("Cập nhật Năm học thành công").build();
+        }
+        return NamHocResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy Năm Học"));
+                    }
+                })
+                .message("Cập nhật Năm Học không thành công").build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocResponse deleteNamHoc(int namHocId) {
+        try {
+            namHocService.deleteNamHoc(namHocId);
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .message("Xoa Năm Học thành công")
+                    .build();
+        }catch (NamHocNotFoundException e) {
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.ERROR)
+                    .message("Xóa không thành công")
+                    .errors(new ArrayList<>(){
+                        {
+                            add(new ErrorsResponse("Không tìm thấy Năm Học"));
                         }
                     })
                     .build();

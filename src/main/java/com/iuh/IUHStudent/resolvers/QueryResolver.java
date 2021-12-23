@@ -101,6 +101,12 @@ public class QueryResolver implements GraphQLQueryResolver {
     @Autowired
     SinhVienLopHocPhanService sinhVienLopHocPhanService;
 
+    @Autowired
+    private NamHocRepository namHocRepository;
+
+    @Autowired
+    NamHocService namHocService;
+
     @PreAuthorize("hasAnyAuthority('USER')")
     public KetQuaHocTapResponse getKetQuaHocTap(int hocKyId) {
         Account currentAccount = accountService.getCurrentAccount();
@@ -662,7 +668,36 @@ public class QueryResolver implements GraphQLQueryResolver {
                 .message("Tìm không thành công")
                 .errors(new ArrayList<>() {
                     {
-                        add(new ErrorsResponse("Không tìm thấy  học phần"));
+                        add(new ErrorsResponse("Không tìm thấy học phần"));
+                    }
+                })
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocsResponse getNamHocs() {
+        List<NamHoc> namHocs = namHocRepository.findAll();
+        return NamHocsResponse.builder()
+                .status(ResponseStatus.OK)
+                .data(namHocs)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public NamHocResponse getNamHocById(int namHocId) {
+        NamHoc namHoc = namHocService.findNamHocById(namHocId);
+        if (namHoc != null) {
+            return NamHocResponse.builder()
+                    .status(ResponseStatus.OK)
+                    .data(namHoc)
+                    .build();
+        }
+        return NamHocResponse.builder()
+                .status(ResponseStatus.ERROR)
+                .message("Tìm không thành công")
+                .errors(new ArrayList<>() {
+                    {
+                        add(new ErrorsResponse("Không tìm thấy  năm học"));
                     }
                 })
                 .build();
