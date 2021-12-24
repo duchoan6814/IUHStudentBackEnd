@@ -243,13 +243,28 @@ public class QueryResolver implements GraphQLQueryResolver {
             List<SinhVienLopHocPhan> _listSinhVienLopHocPhan = sinhVienLopHocPhanService.getListSinhVienLopHocPhanByHocPhan(_lopHocPhan.getLopHocPhanId());
 
 
-            double _diemTrungBinh = _listSinhVienLopHocPhan.stream().mapToDouble(a -> Helper.tinhDiemTrungBinhh(a)).average().getAsDouble();
+            Double _diemTrungBinh = _listSinhVienLopHocPhan.stream().mapToDouble(a -> {
+                if(a.getDiemCuoiKy() == null) return 0;
 
-            KetQuaHocTap _ketQuaHocTap = KetQuaHocTap.builder()
-                    .monHoc(sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getMonHoc())
-                    .diem(Helper.tinhDiemTrungBinhh(sinhVienLopHocPhan))
-                    .diemTrungBinh(_diemTrungBinh)
-                    .build();
+                return Helper.tinhDiemTrungBinhh(a);
+            }).average().getAsDouble();
+
+            KetQuaHocTap _ketQuaHocTap;
+
+            if(sinhVienLopHocPhan.getDiemCuoiKy() == null) {
+                _ketQuaHocTap = KetQuaHocTap.builder()
+                        .monHoc(sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getMonHoc())
+                        .diemTrungBinh(_diemTrungBinh)
+                        .build();
+            }else {
+                _ketQuaHocTap =KetQuaHocTap.builder()
+                        .monHoc(sinhVienLopHocPhan.getLopHocPhan().getHocPhan().getMonHoc())
+                        .diem(Helper.tinhDiemTrungBinhh(sinhVienLopHocPhan))
+                        .diemTrungBinh(_diemTrungBinh)
+                        .build();
+
+            }
+
 
             _ketQuaHocTaps.add(_ketQuaHocTap);
         }
