@@ -38,7 +38,7 @@ public class SinhVien {
     private String email;
     private TonGiao tonGiao;
 
-    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SinhVienLopHocPhan> lopHocPhans;
 
     @OneToOne(mappedBy = "sinhVien")
