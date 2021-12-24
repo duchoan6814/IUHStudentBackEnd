@@ -56,16 +56,31 @@ public class LichHocService {
                     .dayNha(_dayNha)
                     .build();
 
-            LichHoc _lichHoc = LichHoc.builder()
-                    .lichHocId((Integer) obj[0])
-                    .ghiChu((String) obj[1])
-                    .ngayHocTrongTuan((Integer) obj[2])
-                    .tietHocBatDau((Integer) obj[5])
-                    .tietHocKetThuc((Integer) obj[6])
-                    .lopHocPhan(_lopHocPhan)
-                    .phongHoc(_phongHoc)
-                    .nhomThucHanh((Integer) obj[13])
-                    .build();
+            LichHoc _lichHoc;
+
+            if(obj[13] != null) {
+                _lichHoc =  LichHoc.builder()
+                        .lichHocId((Integer) obj[0])
+                        .ghiChu((String) obj[1])
+                        .ngayHocTrongTuan((Integer) obj[2])
+                        .tietHocBatDau((Integer) obj[5])
+                        .tietHocKetThuc((Integer) obj[6])
+                        .lopHocPhan(_lopHocPhan)
+                        .phongHoc(_phongHoc)
+                        .nhomThucHanh((Integer) obj[13])
+                        .build();
+            }else {
+                _lichHoc =  LichHoc.builder()
+                        .lichHocId((Integer) obj[0])
+                        .ghiChu((String) obj[1])
+                        .ngayHocTrongTuan((Integer) obj[2])
+                        .tietHocBatDau((Integer) obj[5])
+                        .tietHocKetThuc((Integer) obj[6])
+                        .lopHocPhan(_lopHocPhan)
+                        .phongHoc(_phongHoc)
+                        .build();
+            }
+
 
             _lichHocs.add(_lichHoc);
         }

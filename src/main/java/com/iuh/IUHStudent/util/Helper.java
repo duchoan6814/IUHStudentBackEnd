@@ -26,7 +26,7 @@ public class Helper {
         return dates;
     }
 
-    public static double round(double value, int places) {
+    public static Double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         long factor = (long) Math.pow(10, places);
@@ -36,7 +36,7 @@ public class Helper {
     }
 
     public static Double tinhDiemTrungBinhh(SinhVienLopHocPhan sinhVienLopHocPhan) {
-        if(Double.isNaN(sinhVienLopHocPhan.getDiemCuoiKy())) {
+        if(sinhVienLopHocPhan.getDiemCuoiKy() == null) {
             return null;
         }
 

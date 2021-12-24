@@ -32,8 +32,8 @@ public class SinhVienLopHocPhan {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Double> diemThuongKy;
 
-    private double diemGiuaKy;
-    private double diemCuoiKy;
+    private Double diemGiuaKy;
+    private Double diemCuoiKy;
 
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)

@@ -117,8 +117,8 @@ public class QueryResolver implements GraphQLQueryResolver {
                 String _hocKy = "Học kỳ " + i.getSoThuTu();
 
                 _listHocKySimple.add(HocKySimple.builder()
-                                .hocKyId(i.getHocKyId())
-                                .namHoc(_hocKy + " (" + _startYear + "-" + _endYear + ")")
+                        .hocKyId(i.getHocKyId())
+                        .namHoc(_hocKy + " (" + _startYear + "-" + _endYear + ")")
                         .build());
             });
 
@@ -286,8 +286,9 @@ public class QueryResolver implements GraphQLQueryResolver {
         DateFormat _df = new SimpleDateFormat("YYYY");
 
         try {
-            List<HocKy> _hocKys = hocKyService.findHocKyBySinhVienId(93);
+            List<HocKy> _hocKys = hocKyService.findHocKyBySinhVienId(_currentAccount.getSinhVien().getSinhVienId());
             List<DiemHocKy> _diemHocKys = new ArrayList<>();
+
 
             _hocKys.forEach(i -> {
                 List<SinhVienLopHocPhan> _sinhVienLopHocPhans = sinhVienLopHocPhanService.getSinhVienLopHocPhanByHocKy(_currentAccount.getSinhVien().getSinhVienId(), i.getHocKyId());
@@ -297,19 +298,34 @@ public class QueryResolver implements GraphQLQueryResolver {
                 _sinhVienLopHocPhans.forEach(_i -> {
 
 
-                    Double _diemTrungBinh = Helper.round(Helper.tinhDiemTrungBinhh(_i), 2);
+                    if (_i.getDiemCuoiKy() != null) {
+                        Double _diemTrungBinh = Helper.round(Helper.tinhDiemTrungBinhh(_i), 2);
 
-                    DiemMonHoc _diemMonHoc = DiemMonHoc.builder()
-                            .tenMonHoc(_i.getLopHocPhan().getHocPhan().getMonHoc().getTenMonHoc())
-                            .diemCuoiKy((float) _i.getDiemCuoiKy())
-                            .diemGiuaKy((float) _i.getDiemGiuaKy())
-                            .diemThuongKy(_i.getDiemThuongKy())
-                            .diemThucHanh(_i.getDiemThucHanh())
-                            .diemTrungBinh(_diemTrungBinh)
-                            .ghiChu(_i.getGhiChu())
-                            .build();
+                        DiemMonHoc _diemMonHoc = DiemMonHoc.builder()
+                                .tenMonHoc(_i.getLopHocPhan().getHocPhan().getMonHoc().getTenMonHoc())
+                                .diemCuoiKy(_i.getDiemCuoiKy())
+                                .diemGiuaKy(_i.getDiemGiuaKy())
+                                .diemThuongKy(_i.getDiemThuongKy())
+                                .diemThucHanh(_i.getDiemThucHanh())
+                                .diemTrungBinh(_diemTrungBinh)
+                                .ghiChu(_i.getGhiChu())
+                                .build();
 
-                    _diemMonHocs.add(_diemMonHoc);
+                        _diemMonHocs.add(_diemMonHoc);
+                    }else {
+                        DiemMonHoc _diemMonHoc = DiemMonHoc.builder()
+                                .tenMonHoc(_i.getLopHocPhan().getHocPhan().getMonHoc().getTenMonHoc())
+                                .diemCuoiKy(_i.getDiemCuoiKy())
+                                .diemGiuaKy(_i.getDiemGiuaKy())
+                                .diemThuongKy(_i.getDiemThuongKy())
+                                .diemThucHanh(_i.getDiemThucHanh())
+                                .ghiChu(_i.getGhiChu())
+                                .build();
+
+                        _diemMonHocs.add(_diemMonHoc);
+                    }
+
+
                 });
 
                 DiemHocKy _diemHocKy = DiemHocKy.builder()
@@ -359,6 +375,8 @@ public class QueryResolver implements GraphQLQueryResolver {
 
             List<LichHoc> _lichHocs = lichHocService.getLichHocBySinhVienId(account.getSinhVien().getSinhVienId(), new java.sql.Date(_dateOfWeek.get(0).getTime()), new java.sql.Date(_dateOfWeek.get(_dateOfWeek.size() - 1).getTime()));
 
+            System.out.println(_lichHocs);
+
             _lichHocs.forEach(i -> {
                 int _ngayHocTrongTuan = i.getNgayHocTrongTuan();
 
@@ -394,7 +412,7 @@ public class QueryResolver implements GraphQLQueryResolver {
                     .message("Lấy thông tin lịch học thành công.")
                     .data(_listDateOfWeek).build();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             return LichHocResponse.builder()
                     .status(ResponseStatus.ERROR)
                     .message("Lấy thông tin lịch học không thành công!")
