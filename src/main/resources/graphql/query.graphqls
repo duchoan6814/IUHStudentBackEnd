@@ -346,6 +346,7 @@ input MonHocInputs {
 input HocKyInput {
     soThuTu: Int
     moTa:String
+    maNamHoc:ID
 }
 
 input  LopHocPhanInput{

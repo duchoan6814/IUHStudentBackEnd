@@ -10,4 +10,5 @@ import lombok.*;
 public class HocKyInput {
     private int soThuTu;
     private String moTa;
+    private int maNamHoc;
 }

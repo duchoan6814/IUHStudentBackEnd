@@ -22,7 +22,7 @@ public class HocKy {
 
     private String moTa;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "nam_hoc_fk")
     private NamHoc namHoc;
 
